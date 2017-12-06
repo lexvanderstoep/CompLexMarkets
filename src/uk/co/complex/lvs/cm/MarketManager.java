@@ -1,9 +1,7 @@
 package uk.co.complex.lvs.cm;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -26,6 +24,7 @@ public class MarketManager {
     private final ConcurrentLinkedQueue<Order> mBuyQueue;
     private final ConcurrentLinkedQueue<Order> mSellQueue;
     private final Book mBook;
+    private final List<TradeListener> mTradeListeners;
 
     /**
      * Constructs a market manager for an empty (no products) market.
@@ -38,11 +37,12 @@ public class MarketManager {
      * Constructs a market manager for a market with the given products.
      * @param products the products which can be traded on this market.
      */
-    public MarketManager(List<Product> products) {
+    public MarketManager(Collection<Product> products) {
         mProducts = new ArrayList<>(products);
         mBuyQueue = new ConcurrentLinkedQueue<>();
         mSellQueue = new ConcurrentLinkedQueue<>();
         mBook = new Book();
+        mTradeListeners = new ArrayList<>();
     }
 
     /**
@@ -59,6 +59,42 @@ public class MarketManager {
      */
     public Book getBook() {
         return new Book(mBook);
+    }
+
+    /**
+     * Returns the buy queue of this market.
+     * @return the buy queue of this market
+     */
+    public ConcurrentLinkedQueue<Order> getBuyQueue() {
+        return new ConcurrentLinkedQueue<>(mBuyQueue);
+    }
+
+    /**
+     * Returns the sell queue of this market.
+     * @return the sell queue of this market
+     */
+    public ConcurrentLinkedQueue<Order> getSellQueue() {
+        return new ConcurrentLinkedQueue<>(mSellQueue);
+    }
+
+    /**
+     * Adds the given trade listener to the list of listeners of the market manager.
+     * @param listener the trade listener to be added
+     */
+    public void addTradeListener(TradeListener listener) {
+        mTradeListeners.add(listener);
+    }
+
+    /**
+     * Removes the given trade listener from the list of listeners of the market manager.
+     * @param listener the trade listener to be removed
+     */
+    public void removeTradeListener(TradeListener listener) {
+        mTradeListeners.remove(listener);
+    }
+
+    private void notifyTradeListeners() {
+        mTradeListeners.forEach((TradeListener t) -> t.update(this));
     }
 
     /**
@@ -100,6 +136,7 @@ public class MarketManager {
                     TradeRecord record = new TradeRecord(order.getProduct(), buyOrder.getActor(),
                             sellOrder.getActor(), price, tradeAmount, OffsetDateTime.now());
                     trades.add(record);
+
                     if (order.getStatus() == Status.COMPLETED) {
                         break;
                     }
@@ -109,6 +146,7 @@ public class MarketManager {
                 }
             }
         }
+
         if (order.getStatus() != Status.COMPLETED) {
             ConcurrentLinkedQueue<Order> actorSide = (order.getSide() == Side.BUY)?
                     mBuyQueue : mSellQueue;
@@ -116,8 +154,8 @@ public class MarketManager {
         }
 
         oppositeSide.removeAll(completedOrders);
-
         mBook.addAllRecords(trades);
+        notifyTradeListeners();
 
         return trades;
     }

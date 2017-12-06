@@ -24,4 +24,11 @@ public class Product {
     public String getName() {
         return mName;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Product)) return false;
+
+        return mName.equals(((Product) o).mName);
+    }
 }

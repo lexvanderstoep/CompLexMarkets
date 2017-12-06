@@ -128,4 +128,14 @@ public class Order {
     public void cancelOrder() {
         mStatus = Status.CANCELLED;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(mProduct.getName() + ": ");
+        builder.append((mSide == Side.BUY)?"buy ":"sell ");
+        builder.append(mAmount + "x" + mPrice + " ");
+        builder.append("@ " + mTime);
+        return builder.toString();
+    }
 }
