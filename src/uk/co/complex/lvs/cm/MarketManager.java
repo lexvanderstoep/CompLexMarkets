@@ -1,5 +1,7 @@
 package uk.co.complex.lvs.cm;
 
+import uk.co.complex.lvs.cm.traders.RandomIntervalProductTrader;
+
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -102,7 +104,7 @@ public class MarketManager {
      * @param order the order to be cancelled
      * @return true iff the order was successfully cancelled and removed from the buy/sell queue
      */
-    public boolean cancelOrder(Order order) {
+    public synchronized boolean cancelOrder(Order order) {
         ConcurrentLinkedQueue<Order> orderQueue = (order.getSide() == Side.BUY)?
                 mBuyQueue : mSellQueue;
         order.cancelOrder();
@@ -116,7 +118,7 @@ public class MarketManager {
      * @param order the order to be processed
      * @return a list with records of all the trades which happen initially when the order is placed
      */
-    public List<TradeRecord> placeOrder(Order order) {
+    public synchronized List<TradeRecord> placeOrder(Order order) {
         List<TradeRecord> trades = new ArrayList<>();
 
         ConcurrentLinkedQueue<Order> oppositeSide = (order.getSide() == Side.BUY)?
@@ -137,11 +139,11 @@ public class MarketManager {
                             sellOrder.getActor(), price, tradeAmount, OffsetDateTime.now());
                     trades.add(record);
 
-                    if (order.getStatus() == Status.COMPLETED) {
-                        break;
-                    }
                     if (oppositeOrder.getStatus() == Status.COMPLETED) {
                         completedOrders.add(oppositeOrder);
+                    }
+                    if (order.getStatus() == Status.COMPLETED) {
+                        break;
                     }
                 }
             }
@@ -158,5 +160,24 @@ public class MarketManager {
         notifyTradeListeners();
 
         return trades;
+    }
+
+
+
+    public static void main(String[] args) throws Exception {
+        final Product xyz = new Product("XYZ");
+        final MarketManager manager = new MarketManager(
+                new ArrayList<>(Arrays.asList(xyz)));
+        BookPrinter marketPrinter = new BookPrinter();
+        manager.addTradeListener(marketPrinter);
+
+        RandomIntervalProductTrader buyer = new RandomIntervalProductTrader(
+                new Account("Buyer"), xyz, manager, Side.BUY, 50.0f, 100.0f,
+                1, 10, 1000, 2000);
+        Thread.sleep(1500);
+        RandomIntervalProductTrader seller = new RandomIntervalProductTrader(
+                new Account("Seller"), xyz, manager, Side.SELL, 50.0f, 100.0f,
+                1, 10, 1000, 2000);
+
     }
 }

@@ -1,6 +1,7 @@
 package uk.co.complex.lvs.cm;
 
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Created by Lex van der Stoep on 06/12/2017.
@@ -87,9 +88,10 @@ public class TradeRecord {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(mProduct.getName() + ": ");
-        builder.append(mAmount + "x" + mPrice + " ");
+        builder.append(mAmount + "x");
+        builder.append(String.format("%.2f", mPrice) + " ");
         builder.append(mSeller.getName() + "->" + mBuyer.getName() + " ");
-        builder.append("@ " + mTime);
+        builder.append("@ " + mTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         return builder.toString();
     }
 

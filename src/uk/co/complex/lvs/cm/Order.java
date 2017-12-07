@@ -1,6 +1,7 @@
 package uk.co.complex.lvs.cm;
 
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Created by Lex van der Stoep on 06/12/2017.
@@ -109,7 +110,8 @@ public class Order {
      */
     public void tradeProduct(int amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("The amount to be traded should be positive");
+            throw new IllegalArgumentException("The amount to be traded should be positive (was " +
+                    amount + ")");
         }
         if (amount > getRemainingAmount()) {
             throw new IllegalArgumentException("The amount to be traded cannot be greater than " +
@@ -132,10 +134,11 @@ public class Order {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(mProduct.getName() + ": ");
-        builder.append((mSide == Side.BUY)?"buy ":"sell ");
-        builder.append(mAmount + "x" + mPrice + " ");
-        builder.append("@ " + mTime);
+        builder.append(mProduct.getName() + " from ");
+        builder.append(mActor.getName() + ": ");
+        builder.append("(" + mRemainingAmount + "/" + mAmount + ")" + "x");
+        builder.append(String.format("%.2f", mPrice) + " ");
+        builder.append("@ " + mTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         return builder.toString();
     }
 }
