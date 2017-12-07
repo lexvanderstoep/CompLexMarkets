@@ -118,7 +118,15 @@ public class MarketManager {
      * @param order the order to be processed
      * @return a list with records of all the trades which happen initially when the order is placed
      */
-    public synchronized List<TradeRecord> placeOrder(Order order) {
+    public synchronized List<TradeRecord> placeOrder(Order order) throws IllegalTradeException {
+        if (order.getAmount() <= 0) throw new IllegalTradeException("The trade should have a" +
+                "positive amount of units (had " + order.getAmount() + ")");
+        if (order.getActor() == null) throw new IllegalTradeException("The trade should be from " +
+                "a valid account (account was null)");
+        if (!mProducts.contains(order.getProduct())) throw new IllegalTradeException("The " +
+                "product to be traded is not listed on this market (was " +
+                order.getProduct().toString() + ")");
+
         List<TradeRecord> trades = new ArrayList<>();
 
         ConcurrentLinkedQueue<Order> oppositeSide = (order.getSide() == Side.BUY)?

@@ -78,7 +78,11 @@ public class RandomIntervalProductTrader {
         float price = rnd.nextFloat() * (mMaxValue - mMinValue) + mMinValue;
         Order order = new Order(mProduct, price, amount, mAccount, mSide, OffsetDateTime.now());
         System.out.println("\nNew order: " + order);
-        mManager.placeOrder(order);
+        try {
+            mManager.placeOrder(order);
+        } catch (IllegalTradeException e) {
+            e.printStackTrace();
+        }
     }
 
     public void stop() {

@@ -4,6 +4,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by Lex van der Stoep on 06/12/2017.
+ *
+ * BookPrinter is a trade listener which prints the entire buy queue, sell queue and the book
+ * to System.out on each update.
  */
 public class BookPrinter implements TradeListener {
     @Override

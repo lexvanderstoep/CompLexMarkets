@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MarketManagerTest {
     @Test
-    void cancelOrder() {
+    void cancelOrder() throws IllegalTradeException {
         Account alice = new Account("Alice");
         Account bob = new Account("Bob");
         Product xyz = new Product("XYZ");
@@ -45,7 +45,7 @@ class MarketManagerTest {
     }
 
     @Test
-    void placeOrder() {
+    void placeOrder() throws IllegalTradeException {
         Account alice = new Account("Alice");
         Account bob = new Account("Bob");
         Product xyz = new Product("XYZ");
