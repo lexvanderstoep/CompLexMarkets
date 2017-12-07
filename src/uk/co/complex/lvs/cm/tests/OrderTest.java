@@ -1,6 +1,8 @@
-package uk.co.complex.lvs.cm;
+package uk.co.complex.lvs.cm.tests;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import uk.co.complex.lvs.cm.*;
 
 import java.time.OffsetDateTime;
 
@@ -16,7 +18,7 @@ class OrderTest {
         Product xyz = new Product("XYZ");
         Order aliceBuy1 = new Order(xyz, 100.10f, 20, alice, Side.BUY, OffsetDateTime.now());
         assertEquals(aliceBuy1.getRemainingAmount(), 20);
-        assertEquals(aliceBuy1.getStatus(), Status.NEW);
+        Assertions.assertEquals(aliceBuy1.getStatus(), Status.NEW);
 
 
         try {

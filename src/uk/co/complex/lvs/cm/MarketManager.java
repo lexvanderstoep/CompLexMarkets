@@ -182,10 +182,10 @@ public class MarketManager {
         RandomIntervalProductTrader buyer = new RandomIntervalProductTrader(
                 new Account("Buyer"), xyz, manager, Side.BUY, 50.0f, 100.0f,
                 1, 10, 1000, 2000);
-        Thread.sleep(1500);
         RandomIntervalProductTrader seller = new RandomIntervalProductTrader(
                 new Account("Seller"), xyz, manager, Side.SELL, 50.0f, 100.0f,
                 1, 10, 1000, 2000);
-
+        buyer.start();
+        seller.start();
     }
 }

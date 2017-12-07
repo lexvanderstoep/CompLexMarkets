@@ -134,6 +134,7 @@ public class Order {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
+        builder.append((mSide ==Side.BUY)?"Buy ":"Sell ");
         builder.append(mProduct.getName() + " from ");
         builder.append(mActor.getName() + ": ");
         builder.append("(" + mRemainingAmount + "/" + mAmount + ")" + "x");

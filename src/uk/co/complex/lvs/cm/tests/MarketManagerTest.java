@@ -1,6 +1,7 @@
-package uk.co.complex.lvs.cm;
+package uk.co.complex.lvs.cm.tests;
 
 import org.junit.jupiter.api.Test;
+import uk.co.complex.lvs.cm.*;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;

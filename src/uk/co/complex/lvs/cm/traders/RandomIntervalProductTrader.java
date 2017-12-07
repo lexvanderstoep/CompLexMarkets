@@ -59,30 +59,31 @@ public class RandomIntervalProductTrader {
             public void run() {
                 while(true) {
                     if (stop) return;
-                    performTrade();
                     int waitTime = rnd.nextInt(maxWait-minWait) + minWait;
                     try {
                         Thread.sleep(waitTime);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    performTrade();
                 }
             }
         };
-
-        tradingThread.start();
     }
 
     private void performTrade() {
         int amount = rnd.nextInt(mMaxAmount - mMinAmount) + mMinAmount;
         float price = rnd.nextFloat() * (mMaxValue - mMinValue) + mMinValue;
         Order order = new Order(mProduct, price, amount, mAccount, mSide, OffsetDateTime.now());
-        System.out.println("\nNew order: " + order);
         try {
             mManager.placeOrder(order);
         } catch (IllegalTradeException e) {
             e.printStackTrace();
         }
+    }
+
+    public void start() {
+        tradingThread.start();
     }
 
     public void stop() {
