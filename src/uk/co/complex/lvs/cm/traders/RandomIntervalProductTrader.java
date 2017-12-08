@@ -17,8 +17,6 @@ public class RandomIntervalProductTrader {
     private final float mMaxValue;
     private final int mMinAmount;
     private final int mMaxAmount;
-    private final int mMinWait;
-    private final int mMaxWait;
     private final Thread tradingThread;
     private final Random rnd = new Random();
     private boolean stop = false;
@@ -51,24 +49,19 @@ public class RandomIntervalProductTrader {
         mMaxValue = maxValue;
         mMinAmount = minAmount;
         mMaxAmount = maxAmount;
-        mMinWait = minWait;
-        mMaxWait = maxWait;
 
-        tradingThread = new Thread() {
-            @Override
-            public void run() {
-                while(true) {
-                    if (stop) return;
-                    int waitTime = rnd.nextInt(maxWait-minWait) + minWait;
-                    try {
-                        Thread.sleep(waitTime);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    performTrade();
+        tradingThread = new Thread(() -> {
+            while(true) {
+                if (stop) return;
+                int waitTime = rnd.nextInt(maxWait-minWait) + minWait;
+                try {
+                    Thread.sleep(waitTime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+                performTrade();
             }
-        };
+        });
     }
 
     private void performTrade() {
@@ -82,10 +75,16 @@ public class RandomIntervalProductTrader {
         }
     }
 
+    /**
+     * Start trading. It will trade until the stop method is called.
+     */
     public void start() {
         tradingThread.start();
     }
 
+    /**
+     * Signals the trader to not put any new orders in. It will finish placing the current order.
+     */
     public void stop() {
         stop = true;
     }

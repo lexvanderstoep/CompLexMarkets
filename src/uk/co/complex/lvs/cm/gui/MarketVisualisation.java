@@ -1,6 +1,6 @@
 package uk.co.complex.lvs.cm.gui;
 
-import net.miginfocom.swing.MigLayout;
+import layout.TableLayout;
 import uk.co.complex.lvs.cm.*;
 import uk.co.complex.lvs.cm.traders.RandomIntervalProductTrader;
 
@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
 /**
@@ -18,9 +19,14 @@ import java.util.stream.Collectors;
  */
 
 public class MarketVisualisation implements TradeListener {
+    private final long PLOT_INTERVAL = 2000;
     private final JList<String> sellQList;
     private final JList<String> buyQList;
     private final JList<String> bookList;
+    private final JLabel priceLabel;
+    private Optional<Float> lastPrice;
+    private final DataPlot pricePlot;
+    private final ArrayList<Float> priceHistory;
 
     public MarketVisualisation() {
         sellQList = new JList();
@@ -28,6 +34,23 @@ public class MarketVisualisation implements TradeListener {
         buyQList = new JList();
         buyQList.setForeground(new Color(0, 200, 0));
         bookList = new JList();
+        priceLabel = new JLabel();
+        priceLabel.setFont(new Font("TimesRoman", Font.BOLD, 16));
+        priceHistory = new ArrayList<>();
+        pricePlot = new DataPlot(priceHistory, 20, "time", "price", Color.gray, Color.black);
+        lastPrice = Optional.empty();
+
+        Thread pricePlotter = new Thread(() -> {
+            while(true) {
+                updatePricePlot();
+                try {
+                    Thread.sleep(PLOT_INTERVAL);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        pricePlotter.start();
     }
 
     /**
@@ -43,19 +66,13 @@ public class MarketVisualisation implements TradeListener {
         frame.setSize(new Dimension(1500, 550));
         frame.setMinimumSize(new Dimension(700, 450));
 
-        // Set up the three column split
+        // Set up the table layout
         JPanel panel = new JPanel();
+        panel.setBackground(Color.darkGray);
         frame.setContentPane(panel);
-        panel.setLayout(new MigLayout("", "[]", "[grow]"));
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        splitPane.setContinuousLayout(true);
-        splitPane.setResizeWeight(1.0f);
-        splitPane.setBorder(null);
-        splitPane.setDividerLocation(450);
-        JSplitPane splitPane2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        splitPane2.setContinuousLayout(true);
-        splitPane2.setBorder(null);
-        splitPane2.setBottomComponent(splitPane);
+        double size[][] =
+                {{350, TableLayout.FILL}, {50, 0.5, 0.5}};
+        panel.setLayout(new TableLayout(size));
 
         // Add the components
         JScrollPane sellPane = new JScrollPane(sellQList);
@@ -64,13 +81,13 @@ public class MarketVisualisation implements TradeListener {
         buyPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         JScrollPane bookPane = new JScrollPane(bookList);
         bookPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        splitPane2.setTopComponent(sellPane);
-        splitPane.setTopComponent(buyPane);
-        splitPane.setBottomComponent(bookPane);
-        panel.add(splitPane2, "push, grow");
-        sellPane.setPreferredSize(new Dimension(300, 0));
-        buyPane.setPreferredSize(new Dimension(300, 0));
-        bookPane.setPreferredSize(new Dimension(300,0));
+        priceLabel.setHorizontalAlignment(JLabel.CENTER);
+        priceLabel.setForeground(Color.white);
+        panel.add(priceLabel, "0, 0, 1, 0");
+        panel.add(sellPane, "0, 1, 0, 0");
+        panel.add(buyPane, "0, 2, 0, 0");
+        panel.add(pricePlot, "1, 1, 0, 0");
+        panel.add(bookPane, "1, 2, 0, 0");
 
         //Display the window.
         frame.pack();
@@ -79,9 +96,45 @@ public class MarketVisualisation implements TradeListener {
 
     @Override
     public void update(MarketManager manager) {
-        buyQList.setListData(toString(manager.getBuyQueue()));
-        sellQList.setListData(toString(manager.getSellQueue()));
+        ConcurrentLinkedQueue<Order> buyQueue = manager.getBuyQueue();
+        ConcurrentLinkedQueue<Order> sellQueue = manager.getSellQueue();
+        buyQList.setListData(toString(buyQueue));
+        sellQList.setListData(toString(sellQueue));
         bookList.setListData(toString(manager.getBook().getAllRecords()));
+
+        Optional<Float> price = getPrice(sellQueue, buyQueue);
+        lastPrice = price;
+
+        if (!price.isPresent()) {
+            priceLabel.setText("NO PRICE");
+        } else {
+            priceLabel.setText(String.format("%.2f", price.get()));
+        }
+    }
+
+    private Optional<Float> getPrice(ConcurrentLinkedQueue<Order> sellQueue,
+                                     ConcurrentLinkedQueue<Order> buyQueue) {
+        Optional<Float> maxBuy = buyQueue
+                .stream()
+                .map(o -> o.getPrice())
+                .max(Comparator.naturalOrder());
+        Optional<Float> minSell = sellQueue
+                .stream()
+                .map(o -> o.getPrice())
+                .min(Comparator.naturalOrder());
+
+        if (!maxBuy.isPresent() | !minSell.isPresent()) {
+            return Optional.empty();
+        } else {
+            return Optional.of((maxBuy.get() + minSell.get())/2.0f);
+        }
+    }
+
+    private void updatePricePlot() {
+        if (lastPrice.isPresent()) {
+            priceHistory.add(lastPrice.get());
+        }
+        pricePlot.updateData(priceHistory);
     }
 
     private Vector<String> toString(Collection collection) {
@@ -107,16 +160,16 @@ public class MarketVisualisation implements TradeListener {
 
         RandomIntervalProductTrader alice = new RandomIntervalProductTrader(
                 new Account("Alice"), xyz, manager, Side.BUY, 50.0f, 100.0f,
-                1, 10, 1000, 2000);
+                1, 10, 300, 500);
         RandomIntervalProductTrader bob = new RandomIntervalProductTrader(
                 new Account("Bob"), xyz, manager, Side.SELL, 50.0f, 100.0f,
-                1, 10, 1000, 2000);
+                1, 10, 300, 500);
         RandomIntervalProductTrader carl = new RandomIntervalProductTrader(
                 new Account("Carl"), xyz, manager, Side.BUY, 50.0f, 100.0f,
-                1, 10, 1000, 2000);
+                1, 10, 500, 1000);
         RandomIntervalProductTrader dylan = new RandomIntervalProductTrader(
                 new Account("Dylan"), xyz, manager, Side.SELL, 50.0f, 100.0f,
-                1, 10, 1000, 2000);
+                1, 10, 500, 1000);
         alice.start();
         bob.start();
         carl.start();

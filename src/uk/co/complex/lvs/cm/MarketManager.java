@@ -170,9 +170,7 @@ public class MarketManager {
         return trades;
     }
 
-
-
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         final Product xyz = new Product("XYZ");
         final MarketManager manager = new MarketManager(
                 new ArrayList<>(Arrays.asList(xyz)));
