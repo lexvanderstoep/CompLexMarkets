@@ -8,7 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
 /**
@@ -96,8 +95,9 @@ public class MarketVisualisation implements TradeListener {
 
     @Override
     public void update(MarketManager manager) {
-        ConcurrentLinkedQueue<Order> buyQueue = manager.getBuyQueue();
-        ConcurrentLinkedQueue<Order> sellQueue = manager.getSellQueue();
+        //TODO: this only supports one product in the market
+        PriceTimePriorityQueue buyQueue = manager.getBuyQueue(manager.getProducts().get(0));
+        PriceTimePriorityQueue sellQueue = manager.getSellQueue(manager.getProducts().get(0));
         buyQList.setListData(toString(buyQueue));
         sellQList.setListData(toString(sellQueue));
         bookList.setListData(toString(manager.getBook().getAllRecords()));
@@ -112,21 +112,12 @@ public class MarketVisualisation implements TradeListener {
         }
     }
 
-    private Optional<Float> getPrice(ConcurrentLinkedQueue<Order> sellQueue,
-                                     ConcurrentLinkedQueue<Order> buyQueue) {
-        Optional<Float> maxBuy = buyQueue
-                .stream()
-                .map(o -> o.getPrice())
-                .max(Comparator.naturalOrder());
-        Optional<Float> minSell = sellQueue
-                .stream()
-                .map(o -> o.getPrice())
-                .min(Comparator.naturalOrder());
-
-        if (!maxBuy.isPresent() | !minSell.isPresent()) {
+    private Optional<Float> getPrice(PriceTimePriorityQueue sellQueue,
+                                     PriceTimePriorityQueue buyQueue) {
+        if (sellQueue.isEmpty() | buyQueue.isEmpty()) {
             return Optional.empty();
         } else {
-            return Optional.of((maxBuy.get() + minSell.get())/2.0f);
+            return Optional.of((sellQueue.first().getPrice() + buyQueue.first().getPrice())/2.0f);
         }
     }
 

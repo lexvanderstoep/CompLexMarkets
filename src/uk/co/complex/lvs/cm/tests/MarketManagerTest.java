@@ -64,7 +64,6 @@ class MarketManagerTest {
         assertEquals(manager.getBook(), checkBook);
 
 
-
         // Add a sell order by bob which is too high for alice
         Order bobSell1 = new Order(xyz, 100.10f, 40, bob, Side.SELL, OffsetDateTime.now());
         records = manager.placeOrder(bobSell1);

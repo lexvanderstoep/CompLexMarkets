@@ -2,9 +2,7 @@ package uk.co.complex.lvs.cm;
 
 import uk.co.complex.lvs.cm.traders.RandomIntervalProductTrader;
 
-import java.time.OffsetDateTime;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by Lex van der Stoep on 06/12/2017.
@@ -23,8 +21,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class MarketManager {
     private final List<Product> mProducts;
-    private final ConcurrentLinkedQueue<Order> mBuyQueue;
-    private final ConcurrentLinkedQueue<Order> mSellQueue;
+    private final Map<Product, PriceTimePriorityQueue> mBuyQueues;
+    private final Map<Product, PriceTimePriorityQueue> mSellQueues;
     private final Book mBook;
     private final List<TradeListener> mTradeListeners;
 
@@ -41,8 +39,12 @@ public class MarketManager {
      */
     public MarketManager(Collection<Product> products) {
         mProducts = new ArrayList<>(products);
-        mBuyQueue = new ConcurrentLinkedQueue<>();
-        mSellQueue = new ConcurrentLinkedQueue<>();
+        mBuyQueues = new HashMap<>();
+        mSellQueues = new HashMap<>();
+        for (Product p: products) {
+            mBuyQueues.put(p, new PriceTimePriorityQueue(Side.BUY));
+            mSellQueues.put(p, new PriceTimePriorityQueue(Side.SELL));
+        }
         mBook = new Book();
         mTradeListeners = new ArrayList<>();
     }
@@ -64,19 +66,21 @@ public class MarketManager {
     }
 
     /**
-     * Returns the buy queue of this market.
-     * @return the buy queue of this market
+     * Returns the buy queue of a product p
+     * @param p the product p
+     * @return the buy queue of the product
      */
-    public ConcurrentLinkedQueue<Order> getBuyQueue() {
-        return new ConcurrentLinkedQueue<>(mBuyQueue);
+    public PriceTimePriorityQueue getBuyQueue(Product p) {
+        return mBuyQueues.get(p);
     }
 
     /**
-     * Returns the sell queue of this market.
-     * @return the sell queue of this market
+     * Returns the sell queue of a product p
+     * @param p the product p
+     * @return the sell queue of the product
      */
-    public ConcurrentLinkedQueue<Order> getSellQueue() {
-        return new ConcurrentLinkedQueue<>(mSellQueue);
+    public PriceTimePriorityQueue getSellQueue(Product p) {
+        return mSellQueues.get(p);
     }
 
     /**
@@ -105,10 +109,11 @@ public class MarketManager {
      * @return true iff the order was successfully cancelled and removed from the buy/sell queue
      */
     public synchronized boolean cancelOrder(Order order) {
-        ConcurrentLinkedQueue<Order> orderQueue = (order.getSide() == Side.BUY)?
-                mBuyQueue : mSellQueue;
+        Map<Product, PriceTimePriorityQueue> orderQueues = (order.getSide() == Side.BUY)?
+                mBuyQueues : mSellQueues;
+        PriceTimePriorityQueue productQueue = orderQueues.get(order.getProduct());
         order.cancelOrder();
-        return orderQueue.remove(order);
+        return productQueue.remove(order);
     }
 
     /**
@@ -126,44 +131,17 @@ public class MarketManager {
         if (!mProducts.contains(order.getProduct())) throw new IllegalTradeException("The " +
                 "product to be traded is not listed on this market (was " +
                 order.getProduct().toString() + ")");
+        PriceTimePriorityQueue oppositeSide = ((order.getSide() == Side.BUY)?
+                mSellQueues : mBuyQueues).get(order.getProduct());
 
-        List<TradeRecord> trades = new ArrayList<>();
-
-        ConcurrentLinkedQueue<Order> oppositeSide = (order.getSide() == Side.BUY)?
-                mSellQueue : mBuyQueue;
-        List<Order> completedOrders = new LinkedList<>();
-        for (Order oppositeOrder: oppositeSide) {
-            if (order.getProduct().equals(oppositeOrder.getProduct())) {
-                Order buyOrder = (order.getSide() == Side.BUY)? order: oppositeOrder;
-                Order sellOrder = (order.getSide() == Side.SELL)? order: oppositeOrder;
-
-                if (buyOrder.getPrice() >= sellOrder.getPrice()) {
-                    int tradeAmount = Math.min(buyOrder.getRemainingAmount(),
-                            sellOrder.getRemainingAmount());
-                    sellOrder.tradeProduct(tradeAmount);
-                    buyOrder.tradeProduct(tradeAmount);
-                    float price = (buyOrder.getPrice() + sellOrder.getPrice())/2;
-                    TradeRecord record = new TradeRecord(order.getProduct(), buyOrder.getActor(),
-                            sellOrder.getActor(), price, tradeAmount, OffsetDateTime.now());
-                    trades.add(record);
-
-                    if (oppositeOrder.getStatus() == Status.COMPLETED) {
-                        completedOrders.add(oppositeOrder);
-                    }
-                    if (order.getStatus() == Status.COMPLETED) {
-                        break;
-                    }
-                }
-            }
-        }
+        List<TradeRecord> trades = MatchingAlgorithm.matchOrder(order, oppositeSide);
 
         if (order.getStatus() != Status.COMPLETED) {
-            ConcurrentLinkedQueue<Order> actorSide = (order.getSide() == Side.BUY)?
-                    mBuyQueue : mSellQueue;
+            PriceTimePriorityQueue actorSide = ((order.getSide() == Side.BUY)?
+                    mBuyQueues : mSellQueues).get(order.getProduct());
             actorSide.add(order);
         }
 
-        oppositeSide.removeAll(completedOrders);
         mBook.addAllRecords(trades);
         notifyTradeListeners();
 
