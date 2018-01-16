@@ -1,22 +1,23 @@
 package uk.co.complex.lvs.cm;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Created by Lex van der Stoep on 06/12/2017.
  *
  * Book represents an order book of a market. It contains the results of orders which took place.
- * The book holds records of each trade, sorted by their execution time.
+ * The book holds records of each trade, sorted by their execution time, newest first.
  */
 public class Book {
-    private final List<TradeRecord> mRecords;
+    private final LinkedList<TradeRecord> mRecords;
 
     /**
      * Constructs an empty book.
      */
     public Book() {
-        mRecords = new ArrayList<>();
+        mRecords = new LinkedList<>();
     }
 
     /**
@@ -24,7 +25,7 @@ public class Book {
      * @param original the original record book
      */
     public Book(Book original) {
-        mRecords = new ArrayList<>(original.mRecords);
+        mRecords = new LinkedList<>(original.mRecords);
     }
 
     /**
@@ -40,6 +41,15 @@ public class Book {
      * @param record the record to be added
      */
     public void addRecord(TradeRecord record) {
+        // Assert: record list sorted from new to old
+        // Use linear search (as new record will most likely be inserted at the head)
+        for (int i = 0; i < mRecords.size(); i++) {
+            TradeRecord r = mRecords.get(i);
+            if (r.getTime().compareTo(record.getTime()) < 0) {
+                mRecords.add(i, record);
+                return;
+            }
+        }
         mRecords.add(record);
     }
 
@@ -48,7 +58,9 @@ public class Book {
      * @param records the records to be added
      */
     public void addAllRecords(List<TradeRecord> records) {
-        mRecords.addAll(records);
+        for (TradeRecord r : records) {
+            addRecord(r);
+        }
     }
 
     @Override
