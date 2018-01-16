@@ -12,13 +12,13 @@ public class RandomIntervalProductTrader {
     private final Account mAccount;
     private final Product mProduct;
     private final MarketManager mManager;
-    private final Side mSide;
     private final float mMinValue;
     private final float mMaxValue;
     private final int mMinAmount;
     private final int mMaxAmount;
     private final Thread tradingThread;
     private final Random rnd = new Random();
+
     private boolean stop = false;
 
     /**
@@ -30,7 +30,6 @@ public class RandomIntervalProductTrader {
      * @param account the account of the trader
      * @param product the product to trade in
      * @param market the market to trade in
-     * @param side the side of the order (buy/sell)
      * @param minValue the minimum of the order price
      * @param maxValue the maximum of the order price
      * @param minAmount the minimum of the order amount
@@ -39,12 +38,11 @@ public class RandomIntervalProductTrader {
      * @param maxWait the maximum time (in milliseconds) to wait between order placements
      */
     public RandomIntervalProductTrader(Account account, Product product, MarketManager market,
-                                       Side side, float minValue, float maxValue, int minAmount,
-                                       int maxAmount, int minWait, int maxWait) {
+                            float minValue, float maxValue, int minAmount,
+                            int maxAmount, int minWait, int maxWait) {
         mAccount = account;
         mProduct = product;
         mManager = market;
-        mSide = side;
         mMinValue = minValue;
         mMaxValue = maxValue;
         mMinAmount = minAmount;
@@ -65,9 +63,14 @@ public class RandomIntervalProductTrader {
     }
 
     private void performTrade() {
-        int amount = rnd.nextInt(mMaxAmount - mMinAmount) + mMinAmount;
+        int tradeAmount = rnd.nextInt(mMaxAmount - mMinAmount) + mMinAmount;
         float price = rnd.nextFloat() * (mMaxValue - mMinValue) + mMinValue;
-        Order order = new Order(mProduct, price, amount, mAccount, mSide, OffsetDateTime.now());
+        Side side = (rnd.nextBoolean())?Side.BUY:Side.SELL;
+        // Perform no sell trade if there is not enough of the product in the account
+        if (side == Side.SELL & tradeAmount > mAccount.getProductAmount(mProduct)) {
+            return;
+        }
+        Order order = new Order(mProduct, price, tradeAmount, mAccount, side, OffsetDateTime.now());
         try {
             mManager.placeOrder(order);
         } catch (IllegalTradeException e) {

@@ -134,35 +134,26 @@ public class MarketVisualisation implements TradeListener {
     }
 
     public static void main(String[] args) {
-        final Product ibm = new Product("IBM");
+        Product ibm = new Product("IBM");
+        Account alice = new Account("Alice");
+        Account bob = new Account("Bob");
+        bob.updateBook(ibm, 100);
         MarketManager manager = new MarketManager(
                 new ArrayList<>(Arrays.asList(ibm)));
 
 
         MarketVisualisation visualiser = new MarketVisualisation();
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                visualiser.createAndShowGUI();
-            }
-        });
+        visualiser.createAndShowGUI();
         manager.addTradeListener(visualiser);
 
 
-        RandomIntervalProductTrader alice = new RandomIntervalProductTrader(
-                new Account("Alice"), ibm, manager, Side.BUY, 50.0f, 100.0f,
-                1, 10, 3000, 5000);
-        RandomIntervalProductTrader bob = new RandomIntervalProductTrader(
-                new Account("Bob"), ibm, manager, Side.SELL, 50.0f, 100.0f,
-                1, 10, 3000, 5000);
-        RandomIntervalProductTrader carl = new RandomIntervalProductTrader(
-                new Account("Carl"), ibm, manager, Side.BUY, 50.0f, 100.0f,
-                1, 10, 5000, 10000);
-        RandomIntervalProductTrader dylan = new RandomIntervalProductTrader(
-                new Account("Dylan"), ibm, manager, Side.SELL, 50.0f, 100.0f,
-                1, 10, 5000, 10000);
-        alice.start();
-        bob.start();
-        carl.start();
-        dylan.start();
+        RandomIntervalProductTrader randomAlice = new RandomIntervalProductTrader(
+                alice, ibm, manager,50.0f, 100.0f,
+                1, 10, 1000, 2000);
+        RandomIntervalProductTrader randomBob = new RandomIntervalProductTrader(
+                bob, ibm, manager,50.0f, 100.0f,
+                1, 10, 1000, 2000);
+        randomAlice.start();
+        randomBob.start();
     }
 }

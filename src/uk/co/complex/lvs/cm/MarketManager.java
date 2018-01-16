@@ -104,6 +104,20 @@ public class MarketManager {
     }
 
     /**
+     * Notify the accounts involved in the given trades that those trades have been made. This
+     * enabled them to, for example, update their book.
+     * @param trades
+     */
+    private void notifyAccounts(List<TradeRecord> trades) {
+        trades.forEach((TradeRecord r) -> {
+            Product p = r.getProduct();
+            int amount = r.getAmount();
+            r.getBuyer().updateBook(p, amount);
+            r.getSeller().updateBook(p, -amount);
+        });
+    }
+
+    /**
      * Cancel the given order and remove it from the buy/sell queue.
      * @param order the order to be cancelled
      * @return true iff the order was successfully cancelled and removed from the buy/sell queue
@@ -131,6 +145,12 @@ public class MarketManager {
         if (!mProducts.contains(order.getProduct())) throw new IllegalTradeException("The " +
                 "product to be traded is not listed on this market (was " +
                 order.getProduct().toString() + ")");
+        if (order.getSide() == Side.SELL &
+                order.getActor().getProductAmount(order.getProduct()) < order.getAmount())
+            throw new IllegalTradeException("The actor does not have enough of the product it is " +
+                    "trying to sell (has: " + order.getActor().getProductAmount(order.getProduct())
+                    + " , wants: " + order.getAmount() + ")");
+
         PriceTimePriorityQueue oppositeSide = ((order.getSide() == Side.BUY)?
                 mSellQueues : mBuyQueues).get(order.getProduct());
 
@@ -143,6 +163,7 @@ public class MarketManager {
         }
 
         mBook.addAllRecords(trades);
+        notifyAccounts(trades);
         notifyTradeListeners();
 
         return trades;
@@ -156,10 +177,10 @@ public class MarketManager {
         manager.addTradeListener(marketPrinter);
 
         RandomIntervalProductTrader buyer = new RandomIntervalProductTrader(
-                new Account("Buyer"), xyz, manager, Side.BUY, 50.0f, 100.0f,
+                new Account("Buyer"), xyz, manager, 50.0f, 100.0f,
                 1, 10, 1000, 2000);
         RandomIntervalProductTrader seller = new RandomIntervalProductTrader(
-                new Account("Seller"), xyz, manager, Side.SELL, 50.0f, 100.0f,
+                new Account("Seller"), xyz, manager, 50.0f, 100.0f,
                 1, 10, 1000, 2000);
         buyer.start();
         seller.start();

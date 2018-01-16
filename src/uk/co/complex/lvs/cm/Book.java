@@ -58,9 +58,7 @@ public class Book {
      * @param records the records to be added
      */
     public void addAllRecords(List<TradeRecord> records) {
-        for (TradeRecord r : records) {
-            addRecord(r);
-        }
+        records.forEach((TradeRecord r) -> addRecord(r));
     }
 
     @Override
