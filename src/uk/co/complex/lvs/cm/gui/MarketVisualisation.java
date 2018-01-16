@@ -19,26 +19,15 @@ import java.util.stream.Collectors;
 
 public class MarketVisualisation implements TradeListener {
     private final long PLOT_INTERVAL = 2000;
-    private final JList<String> sellQList;
-    private final JList<String> buyQList;
-    private final JList<String> bookList;
-    private final JLabel priceLabel;
-    private Optional<Float> lastPrice;
-    private final DataPlot pricePlot;
-    private final ArrayList<Float> priceHistory;
+    private JList<String> sellQList;
+    private JList<String> buyQList;
+    private JList<String> bookList;
+    private JLabel priceLabel;
+    private Optional<Float> lastPrice = Optional.empty();
+    private DataPlot pricePlot;
+    private ArrayList<Float> priceHistory = new ArrayList<>();
 
     public MarketVisualisation() {
-        sellQList = new JList();
-        sellQList.setForeground(new Color(241, 0, 0));
-        buyQList = new JList();
-        buyQList.setForeground(new Color(0, 200, 0));
-        bookList = new JList();
-        priceLabel = new JLabel();
-        priceLabel.setFont(new Font("TimesRoman", Font.BOLD, 16));
-        priceHistory = new ArrayList<>();
-        pricePlot = new DataPlot(priceHistory, 20, "time", "price", Color.gray, Color.black);
-        lastPrice = Optional.empty();
-
         Thread pricePlotter = new Thread(() -> {
             while(true) {
                 updatePricePlot();
@@ -74,6 +63,14 @@ public class MarketVisualisation implements TradeListener {
         panel.setLayout(new TableLayout(size));
 
         // Add the components
+        pricePlot = new DataPlot(priceHistory, 20, "time", "price", Color.gray);
+        sellQList = new JList();
+        sellQList.setForeground(new Color(241, 0, 0));
+        buyQList = new JList();
+        buyQList.setForeground(new Color(0, 200, 0));
+        bookList = new JList();
+        priceLabel = new JLabel();
+        priceLabel.setFont(new Font("TimesRoman", Font.BOLD, 16));
         JScrollPane sellPane = new JScrollPane(sellQList);
         sellPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         JScrollPane buyPane = new JScrollPane(buyQList);
@@ -125,7 +122,9 @@ public class MarketVisualisation implements TradeListener {
         if (lastPrice.isPresent()) {
             priceHistory.add(lastPrice.get());
         }
-        pricePlot.updateData(priceHistory);
+        if (pricePlot != null) {
+            pricePlot.updateData(priceHistory);
+        }
     }
 
     private Vector<String> toString(Collection collection) {
@@ -135,9 +134,9 @@ public class MarketVisualisation implements TradeListener {
     }
 
     public static void main(String[] args) {
-        final Product xyz = new Product("XYZ");
+        final Product ibm = new Product("IBM");
         MarketManager manager = new MarketManager(
-                new ArrayList<>(Arrays.asList(xyz)));
+                new ArrayList<>(Arrays.asList(ibm)));
 
 
         MarketVisualisation visualiser = new MarketVisualisation();
@@ -150,17 +149,17 @@ public class MarketVisualisation implements TradeListener {
 
 
         RandomIntervalProductTrader alice = new RandomIntervalProductTrader(
-                new Account("Alice"), xyz, manager, Side.BUY, 50.0f, 100.0f,
-                1, 10, 300, 500);
+                new Account("Alice"), ibm, manager, Side.BUY, 50.0f, 100.0f,
+                1, 10, 3000, 5000);
         RandomIntervalProductTrader bob = new RandomIntervalProductTrader(
-                new Account("Bob"), xyz, manager, Side.SELL, 50.0f, 100.0f,
-                1, 10, 300, 500);
+                new Account("Bob"), ibm, manager, Side.SELL, 50.0f, 100.0f,
+                1, 10, 3000, 5000);
         RandomIntervalProductTrader carl = new RandomIntervalProductTrader(
-                new Account("Carl"), xyz, manager, Side.BUY, 50.0f, 100.0f,
-                1, 10, 500, 1000);
+                new Account("Carl"), ibm, manager, Side.BUY, 50.0f, 100.0f,
+                1, 10, 5000, 10000);
         RandomIntervalProductTrader dylan = new RandomIntervalProductTrader(
-                new Account("Dylan"), xyz, manager, Side.SELL, 50.0f, 100.0f,
-                1, 10, 500, 1000);
+                new Account("Dylan"), ibm, manager, Side.SELL, 50.0f, 100.0f,
+                1, 10, 5000, 10000);
         alice.start();
         bob.start();
         carl.start();

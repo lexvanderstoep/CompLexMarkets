@@ -25,6 +25,7 @@ public class DataPlot extends JPanel {
     private final String mYLabel;
     private final Color mLineColor;
     private final Color mPointColor;
+    private boolean markEnabled;
 
     /**
      * Constructs a new DataPlot, initialised with a certain data set.
@@ -43,6 +44,11 @@ public class DataPlot extends JPanel {
         mYLabel = yLabel;
         mLineColor = line;
         mPointColor = point;
+        markEnabled = true;
+    }
+    public DataPlot(List<Float> data, int padding, String xLabel, String yLabel, Color line) {
+        this(data, padding, xLabel, yLabel, line, null);
+        markEnabled = false;
     }
 
     protected void paintComponent(Graphics g) {
@@ -88,12 +94,14 @@ public class DataPlot extends JPanel {
             double y2 = h - mPadding - scale*mData.get(i+1);
             g2.draw(new Line2D.Double(x1, y1, x2, y2));
         }
-        // Mark data points.
-        g2.setPaint(mPointColor);
-        for(int i = 0; i < mData.size(); i++) {
-            double x = mPadding + i*xInc;
-            double y = h - mPadding - scale*mData.get(i);
-            g2.fill(new Ellipse2D.Double(x-2, y-2, 4, 4));
+        if (markEnabled) {
+            // Mark data points.
+            g2.setPaint(mPointColor);
+            for (int i = 0; i < mData.size(); i++) {
+                double x = mPadding + i * xInc;
+                double y = h - mPadding - scale * mData.get(i);
+                g2.fill(new Ellipse2D.Double(x - 2, y - 2, 4, 4));
+            }
         }
     }
 
