@@ -63,7 +63,7 @@ public class MarketVisualisation implements TradeListener {
         panel.setLayout(new TableLayout(size));
 
         // Add the components
-        pricePlot = new DataPlot(priceHistory, 20, "time", "price", Color.gray);
+        pricePlot = new DataPlot(priceHistory, 50, 20, "time", "price", Color.gray);
         sellQList = new JList();
         sellQList.setForeground(new Color(241, 0, 0));
         buyQList = new JList();
@@ -92,7 +92,6 @@ public class MarketVisualisation implements TradeListener {
 
     @Override
     public void update(MarketManager manager) {
-        //TODO: this only supports one product in the market
         PriceTimePriorityQueue buyQueue = manager.getBuyQueue(manager.getProducts().get(0));
         PriceTimePriorityQueue sellQueue = manager.getSellQueue(manager.getProducts().get(0));
         buyQList.setListData(toString(buyQueue));

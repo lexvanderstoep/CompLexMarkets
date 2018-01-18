@@ -4,8 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -20,35 +20,28 @@ import java.util.List;
  */
 public class DataPlot extends JPanel {
     private List<Float> mData;
-    private final int mPadding;
-    private final String mXLabel;
-    private final String mYLabel;
-    private final Color mLineColor;
-    private final Color mPointColor;
-    private boolean markEnabled;
+    private int mXPadding;
+    private int mYPadding;
+    private String mXLabel;
+    private String mYLabel;
+    private Color mLineColor;
 
     /**
      * Constructs a new DataPlot, initialised with a certain data set.
      * @param data the data to be plotted
-     * @param padding the padding around the graph
+     * @param horPadding the horizontal padding around the graph
+     * @param verPadding the vertical padding around the graph
      * @param xLabel the label at the x-axis
      * @param yLabel the label at the y-axis
      * @param line the color of the line connecting the data points
-     * @param point the color of the data points
      */
-    public DataPlot(List<Float> data, int padding, String xLabel, String yLabel, Color line,
-                    Color point) {
+    public DataPlot(List<Float> data, int horPadding, int verPadding, String xLabel, String yLabel, Color line) {
         mData = data;
-        mPadding = padding;
+        mXPadding = horPadding;
+        mYPadding = verPadding;
         mXLabel = xLabel;
         mYLabel = yLabel;
         mLineColor = line;
-        mPointColor = point;
-        markEnabled = true;
-    }
-    public DataPlot(List<Float> data, int padding, String xLabel, String yLabel, Color line) {
-        this(data, padding, xLabel, yLabel, line, null);
-        markEnabled = false;
     }
 
     protected void paintComponent(Graphics g) {
@@ -58,50 +51,59 @@ public class DataPlot extends JPanel {
                 RenderingHints.VALUE_ANTIALIAS_ON);
         int w = getWidth();
         int h = getHeight();
-        // Draw ordinate.
-        g2.draw(new Line2D.Double(mPadding, mPadding, mPadding, h-mPadding));
-        // Draw abcissa.
-        g2.draw(new Line2D.Double(mPadding, h-mPadding, w-mPadding, h-mPadding));
-        // Draw labels.
+
+        // Draw vertical axis
+        g2.draw(new Line2D.Double(mXPadding, mYPadding, mXPadding, h-mYPadding));
+
+        // Draw horizontal axis
+        g2.draw(new Line2D.Double(mXPadding, h-mYPadding, w-mXPadding, h-mYPadding));
+
+        // Draw labels
         Font font = g2.getFont();
         FontRenderContext frc = g2.getFontRenderContext();
         LineMetrics lm = font.getLineMetrics("0", frc);
         float sh = lm.getAscent() + lm.getDescent();
-        // Ordinate label.
+
+        // Vertical label
         String s = mYLabel;
-        float sy = mPadding + ((h - 2*mPadding) - s.length()*sh)/2 + lm.getAscent();
+        float sy = mYPadding + ((h - 2*mYPadding) - s.length()*sh)/2 + lm.getAscent();
         for(int i = 0; i < s.length(); i++) {
             String letter = String.valueOf(s.charAt(i));
             float sw = (float)font.getStringBounds(letter, frc).getWidth();
-            float sx = (mPadding - sw)/2;
+            float sx = (mXPadding - sw)/2;
             g2.drawString(letter, sx, sy);
             sy += sh;
         }
-        // Abcissa label.
+
+        // Horizontal label
         s = mXLabel;
-        sy = h - mPadding + (mPadding - sh)/2 + lm.getAscent();
+        sy = h - mYPadding + (mYPadding - sh)/2 + lm.getAscent();
         float sw = (float)font.getStringBounds(s, frc).getWidth();
         float sx = (w - sw)/2;
         g2.drawString(s, sx, sy);
-        // Draw lines.
-        double xInc = (double)(w - 2*mPadding)/(mData.size()-1);
-        double scale = (double)(h - 2*mPadding)/getMax();
+
+        // Draw values
+        float min = getMin() * 0.9f;
+        float max = getMax() * 1.1f;
+        if (mData.size() > 1) {
+            String bottomString = new DecimalFormat("#.##").format(min);
+            String topString = new DecimalFormat("#.##").format(max);
+            float widthBottom = (float) font.getStringBounds(bottomString, frc).getWidth();
+            float widthTop = (float) font.getStringBounds(topString, frc).getWidth();
+            g2.drawString(bottomString, mXPadding - widthBottom - 5, h - mYPadding);
+            g2.drawString(topString, mXPadding - widthTop - 5, mYPadding);
+        }
+
+        // Draw lines
+        double xInc = (double)(w - 2*mXPadding)/(mData.size()-1);
+        double scale = (double)(h - 2*mYPadding)/max;
         g2.setPaint(mLineColor);
         for(int i = 0; i < mData.size()-1; i++) {
-            double x1 = mPadding + i*xInc;
-            double y1 = h - mPadding - scale*mData.get(i);
-            double x2 = mPadding + (i+1)*xInc;
-            double y2 = h - mPadding - scale*mData.get(i+1);
+            double x1 = mXPadding + i*xInc;
+            double y1 = h - mYPadding - scale*mData.get(i);
+            double x2 = mXPadding + (i+1)*xInc;
+            double y2 = h - mYPadding - scale*mData.get(i+1);
             g2.draw(new Line2D.Double(x1, y1, x2, y2));
-        }
-        if (markEnabled) {
-            // Mark data points.
-            g2.setPaint(mPointColor);
-            for (int i = 0; i < mData.size(); i++) {
-                double x = mPadding + i * xInc;
-                double y = h - mPadding - scale * mData.get(i);
-                g2.fill(new Ellipse2D.Double(x - 2, y - 2, 4, 4));
-            }
         }
     }
 
@@ -112,6 +114,15 @@ public class DataPlot extends JPanel {
                 max = mData.get(i);
         }
         return max;
+    }
+
+    private float getMin() {
+        float min = Integer.MAX_VALUE;
+        for (int i = 0; i < mData.size(); i++) {
+            if (mData.get(i) < min)
+                min = mData.get(i);
+        }
+        return min;
     }
 
     public void updateData(List<Float> data) {
