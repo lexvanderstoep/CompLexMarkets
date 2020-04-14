@@ -18,6 +18,9 @@ class MarketManagerTest {
         List<Product> allProducts = new ArrayList<>();
         allProducts.add(xyz);
         MarketManager manager = new MarketManager(allProducts);
+        alice.updateBook(xyz, 100);
+        bob.updateBook(xyz, 100);
+
         Book checkBook = new Book();
 
         // Add a buy order by alice
@@ -33,7 +36,7 @@ class MarketManagerTest {
         assertEquals(aliceBuy1.getRemainingAmount(), 20);
         assertEquals(aliceBuy1.getStatus(), Status.CANCELLED);
 
-        // Add a sell order by bob which is good for alice (but which is already cancelled)
+        // Add a sell order by bob which is good for alice (but which has already been cancelled)
         Order bobSell2 = new Order(xyz, 100.00f, 30, bob, Side.SELL, OffsetDateTime.now());
         records = manager.placeOrder(bobSell2);
         checkBook.addAllRecords(records);
@@ -53,6 +56,9 @@ class MarketManagerTest {
         List<Product> allProducts = new ArrayList<>();
         allProducts.add(xyz);
         MarketManager manager = new MarketManager(allProducts);
+        alice.updateBook(xyz, 100);
+        bob.updateBook(xyz, 100);
+
         Book checkBook = new Book();
 
         // Add a buy order by alice
