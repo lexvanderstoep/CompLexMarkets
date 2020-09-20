@@ -1,17 +1,16 @@
-package uk.co.complex.lvs.cm.tests;
+package uk.co.complex.lvs.cm;
 
-import org.junit.jupiter.api.Test;
-import uk.co.complex.lvs.cm.*;
+import org.junit.Test;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
 
-class MarketManagerTest {
+public class MarketManagerTest {
     @Test
-    void cancelOrder() throws IllegalTradeException {
+    public void cancelOrder() throws IllegalTradeException {
         Account alice = new Account("Alice");
         Account bob = new Account("Bob");
         Product xyz = new Product("XYZ");
@@ -49,7 +48,7 @@ class MarketManagerTest {
     }
 
     @Test
-    void placeOrder() throws IllegalTradeException {
+    public void placeOrder() throws IllegalTradeException {
         Account alice = new Account("Alice");
         Account bob = new Account("Bob");
         Product xyz = new Product("XYZ");

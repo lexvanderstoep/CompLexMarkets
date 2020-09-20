@@ -1,8 +1,12 @@
 package uk.co.complex.lvs.cm.gui;
 
-import layout.TableLayout;
-import uk.co.complex.lvs.cm.*;
+import uk.co.complex.lvs.cm.Account;
+import uk.co.complex.lvs.cm.MarketManager;
+import uk.co.complex.lvs.cm.PriceTimePriorityQueue;
+import uk.co.complex.lvs.cm.Product;
+import uk.co.complex.lvs.cm.TradeListener;
 import uk.co.complex.lvs.cm.traders.RandomIntervalProductTrader;
+import layout.TableLayout;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,6 +1,11 @@
 package uk.co.complex.lvs.cm.traders;
 
-import uk.co.complex.lvs.cm.*;
+import uk.co.complex.lvs.cm.Account;
+import uk.co.complex.lvs.cm.IllegalTradeException;
+import uk.co.complex.lvs.cm.MarketManager;
+import uk.co.complex.lvs.cm.Order;
+import uk.co.complex.lvs.cm.Product;
+import uk.co.complex.lvs.cm.Side;
 
 import java.time.OffsetDateTime;
 import java.util.Random;

@@ -1,25 +1,20 @@
-package uk.co.complex.lvs.cm.tests;
+package uk.co.complex.lvs.cm;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import uk.co.complex.lvs.cm.*;
+import org.junit.Test;
 
 import java.time.OffsetDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-/**
- * Created by Lex van der Stoep on 06/12/2017.
- */
-class OrderTest {
+public class OrderTest {
     @Test
-    void tradeProduct() {
+    public void tradeProduct() {
         Account alice = new Account("Alice");
         Product xyz = new Product("XYZ");
         Order aliceBuy1 = new Order(xyz, 100.10f, 20, alice, Side.BUY, OffsetDateTime.now());
         assertEquals(aliceBuy1.getRemainingAmount(), 20);
-        Assertions.assertEquals(aliceBuy1.getStatus(), Status.NEW);
-
+        assertEquals(aliceBuy1.getStatus(), Status.NEW);
 
         try {
             aliceBuy1.tradeProduct(0);

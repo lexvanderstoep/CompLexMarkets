@@ -17,6 +17,10 @@
 *.tar.gz
 *.rar
 
+# Maven
+log/
+target/
+
 # IntelliJ IDEA
 .idea/
 out/
