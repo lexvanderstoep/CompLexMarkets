@@ -27,7 +27,7 @@ public class BookPrinter implements TradeListener {
             }
         }
         System.out.println("Book:");
-        for (TradeRecord record: currentBook.getAllRecords()) {
+        for (Trade record: currentBook.getAllRecords()) {
             System.out.println(record);
         }
     }

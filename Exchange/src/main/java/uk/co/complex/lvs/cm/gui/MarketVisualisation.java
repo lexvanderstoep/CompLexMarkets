@@ -155,7 +155,7 @@ public class MarketVisualisation implements TradeListener {
                 1, 10, 1000, 2000);
         RandomIntervalProductTrader randomBob = new RandomIntervalProductTrader(
                 bob, ibm, manager,50.0f, 100.0f,
-                1, 10, 1000, 2000);
+                10, 100, 1000, 2000);
         randomAlice.start();
         randomBob.start();
     }

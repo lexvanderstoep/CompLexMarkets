@@ -11,7 +11,7 @@ import java.util.List;
  * The book holds records of each trade, sorted by their execution time, newest first.
  */
 public class Book {
-    private final LinkedList<TradeRecord> mRecords;
+    private final LinkedList<Trade> mRecords;
 
     /**
      * Constructs an empty book.
@@ -32,7 +32,7 @@ public class Book {
      * Returns all the records in the book.
      * @return a list of all the records in the book
      */
-    public List<TradeRecord> getAllRecords() {
+    public List<Trade> getAllRecords() {
         return new ArrayList<>(mRecords);
     }
 
@@ -40,11 +40,11 @@ public class Book {
      * Adds the given record to the book.
      * @param record the record to be added
      */
-    public void addRecord(TradeRecord record) {
+    public void addRecord(Trade record) {
         // Assert: record list sorted from new to old
         // Use linear search (as new record will most likely be inserted at the head)
         for (int i = 0; i < mRecords.size(); i++) {
-            TradeRecord r = mRecords.get(i);
+            Trade r = mRecords.get(i);
             if (r.getTime().compareTo(record.getTime()) < 0) {
                 mRecords.add(i, record);
                 return;
@@ -57,8 +57,8 @@ public class Book {
      * Adds all the given records to the book.
      * @param records the records to be added
      */
-    public void addAllRecords(List<TradeRecord> records) {
-        records.forEach((TradeRecord r) -> addRecord(r));
+    public void addAllRecords(List<Trade> records) {
+        records.forEach((Trade r) -> addRecord(r));
     }
 
     @Override

@@ -108,8 +108,8 @@ public class MarketManager {
      * enabled them to, for example, update their book.
      * @param trades
      */
-    private void notifyAccounts(List<TradeRecord> trades) {
-        trades.forEach((TradeRecord r) -> {
+    private void notifyAccounts(List<Trade> trades) {
+        trades.forEach((Trade r) -> {
             Product p = r.getProduct();
             int amount = r.getAmount();
             r.getBuyer().updateBook(p, amount);
@@ -137,7 +137,7 @@ public class MarketManager {
      * @param order the order to be processed
      * @return a list with records of all the trades which happen initially when the order is placed
      */
-    public synchronized List<TradeRecord> placeOrder(Order order) throws IllegalTradeException {
+    public synchronized List<Trade> placeOrder(Order order) throws IllegalTradeException {
         if (order.getAmount() <= 0) throw new IllegalTradeException("The trade should have a" +
                 "positive amount of units (had " + order.getAmount() + ")");
         if (order.getActor() == null) throw new IllegalTradeException("The trade should be from " +
@@ -154,7 +154,7 @@ public class MarketManager {
         PriceTimePriorityQueue oppositeSide = ((order.getSide() == Side.BUY)?
                 mSellQueues : mBuyQueues).get(order.getProduct());
 
-        List<TradeRecord> trades = MatchingAlgorithm.matchOrder(order, oppositeSide);
+        List<Trade> trades = MatchingAlgorithm.matchOrder(order, oppositeSide);
 
         if (order.getStatus() != Status.COMPLETED) {
             PriceTimePriorityQueue actorSide = ((order.getSide() == Side.BUY)?

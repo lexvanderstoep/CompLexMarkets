@@ -1,5 +1,7 @@
 package uk.co.complex.lvs.cm;
 
+import java.util.Objects;
+
 /**
  * Created by Lex van der Stoep on 06/12/2017.
  *
@@ -26,9 +28,19 @@ public class Product {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Product)) return false;
+    public boolean equals(Object myOtherObject) {
+        if (this == myOtherObject) {
+            return true;
+        }
+        if (myOtherObject == null || getClass() != myOtherObject.getClass()) {
+            return false;
+        }
+        final Product myOtherProduct = (Product) myOtherObject;
+        return mName.equals(myOtherProduct.mName);
+    }
 
-        return mName.equals(((Product) o).mName);
+    @Override
+    public int hashCode() {
+        return Objects.hash(mName);
     }
 }

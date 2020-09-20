@@ -24,8 +24,8 @@ public class MarketManagerTest {
 
         // Add a buy order by alice
         Order aliceBuy1 = new Order(xyz, 100.00f, 20, alice, Side.BUY, OffsetDateTime.now());
-        List<TradeRecord> records = manager.placeOrder(aliceBuy1);
-        assertEquals(records, new ArrayList<TradeRecord>());
+        List<Trade> records = manager.placeOrder(aliceBuy1);
+        assertEquals(records, new ArrayList<Trade>());
         assertEquals(aliceBuy1.getRemainingAmount(), 20);
         assertEquals(aliceBuy1.getStatus(), Status.NEW);
         assertEquals(manager.getBook(), checkBook);
@@ -62,8 +62,8 @@ public class MarketManagerTest {
 
         // Add a buy order by alice
         Order aliceBuy1 = new Order(xyz, 100.00f, 20, alice, Side.BUY, OffsetDateTime.now());
-        List<TradeRecord> records = manager.placeOrder(aliceBuy1);
-        assertEquals(records, new ArrayList<TradeRecord>());
+        List<Trade> records = manager.placeOrder(aliceBuy1);
+        assertEquals(records, new ArrayList<Trade>());
         assertEquals(aliceBuy1.getRemainingAmount(), 20);
         assertEquals(aliceBuy1.getStatus(), Status.NEW);
         assertEquals(manager.getBook(), checkBook);
@@ -72,7 +72,7 @@ public class MarketManagerTest {
         // Add a sell order by bob which is too high for alice
         Order bobSell1 = new Order(xyz, 100.10f, 40, bob, Side.SELL, OffsetDateTime.now());
         records = manager.placeOrder(bobSell1);
-        assertEquals(records, new ArrayList<TradeRecord>());
+        assertEquals(records, new ArrayList<Trade>());
         assertEquals(aliceBuy1.getRemainingAmount(), 20);
         assertEquals(aliceBuy1.getStatus(), Status.NEW);
         assertEquals(bobSell1.getRemainingAmount(), 40);
@@ -86,7 +86,7 @@ public class MarketManagerTest {
         records = manager.placeOrder(bobSell2);
         checkBook.addAllRecords(records);
         assertEquals(records.size(), 1);
-        assertEquals(records.get(0), new TradeRecord(xyz, alice, bob, 100.00f, 20,
+        assertEquals(records.get(0), new Trade(xyz, alice, bob, 100.00f, 20,
                 records.get(0).getTime()));
         assertEquals(aliceBuy1.getRemainingAmount(), 0);
         assertEquals(aliceBuy1.getStatus(), Status.COMPLETED);

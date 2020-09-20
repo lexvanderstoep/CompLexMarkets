@@ -2,6 +2,7 @@ package uk.co.complex.lvs.cm;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /**
  * Created by Lex van der Stoep on 06/12/2017.
@@ -9,7 +10,7 @@ import java.time.format.DateTimeFormatter;
  * TradeRecord represents a record of trade. A trade happens when a buyer and a seller have
  * matching orders. An order is matching when they can agree on a price.
  */
-public class TradeRecord {
+public class Trade {
     private final Product mProduct;
     private final Account mBuyer;
     private final Account mSeller;
@@ -26,7 +27,7 @@ public class TradeRecord {
      * @param amount the amount which was traded
      * @param time the time at which the trade was executed
      */
-    public TradeRecord(Product product, Account buyer, Account seller, float price, int amount,
+    public Trade(Product product, Account buyer, Account seller, float price, int amount,
                        OffsetDateTime time) {
         mProduct = product;
         mBuyer = buyer;
@@ -96,13 +97,24 @@ public class TradeRecord {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof TradeRecord)) return false;
+    public boolean equals(Object myOtherObject) {
+        if (this == myOtherObject) {
+            return true;
+        }
+        if (myOtherObject == null || getClass() != myOtherObject.getClass()) {
+            return false;
+        }
+        final Trade myOtherTrade = (Trade) myOtherObject;
+        return Float.compare(myOtherTrade.mPrice, mPrice) == 0 &&
+               mAmount == myOtherTrade.mAmount &&
+               Objects.equals(mProduct, myOtherTrade.mProduct) &&
+               Objects.equals(mBuyer, myOtherTrade.mBuyer) &&
+               Objects.equals(mSeller, myOtherTrade.mSeller) &&
+               Objects.equals(mTime, myOtherTrade.mTime);
+    }
 
-        TradeRecord t = (TradeRecord) o;
-
-        return (mProduct.equals(t.getProduct()) & mBuyer.equals(t.getBuyer()) &
-                mSeller.equals(t.getSeller()) & mPrice == t.getPrice() &
-                mAmount == t.getAmount() & mTime.equals(t.getTime()));
+    @Override
+    public int hashCode() {
+        return Objects.hash(mProduct, mBuyer, mSeller, mPrice, mAmount, mTime);
     }
 }

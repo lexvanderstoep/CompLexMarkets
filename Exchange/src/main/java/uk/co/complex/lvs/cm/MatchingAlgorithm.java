@@ -29,14 +29,14 @@ public class MatchingAlgorithm {
      * @param opposingOrderQueue the queue of the opposing side
      * @return all the matched order records from the queue
      */
-    public static List<TradeRecord> matchOrder(Order order, PriceTimePriorityQueue opposingOrderQueue) {
+    public static List<Trade> matchOrder(Order order, PriceTimePriorityQueue opposingOrderQueue) {
         // Perform a sanity check on the sides of the order
         if (order.getSide().equals(opposingOrderQueue.getSide())) {
             throw new IllegalArgumentException("The new order and the order queue should not " +
                     "contain order of the same side");
         }
 
-        List<TradeRecord> matchedOrders = new ArrayList<>();
+        List<Trade> matchedOrders = new ArrayList<>();
 
         while(!opposingOrderQueue.isEmpty()) {
             Order oppositeOrder = opposingOrderQueue.first();
@@ -58,7 +58,7 @@ public class MatchingAlgorithm {
                         order.getActor() : oppositeOrder.getActor();
                 Account seller = (order.getSide() == Side.SELL)?
                         order.getActor() : oppositeOrder.getActor();
-                TradeRecord record = new TradeRecord(order.getProduct(), buyer, seller, price,
+                Trade record = new Trade(order.getProduct(), buyer, seller, price,
                         tradeAmount, OffsetDateTime.now());
                 matchedOrders.add(record);
 
