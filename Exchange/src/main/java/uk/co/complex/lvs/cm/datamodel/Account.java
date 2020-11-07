@@ -1,4 +1,4 @@
-package uk.co.complex.lvs.cm;
+package uk.co.complex.lvs.cm.datamodel;
 
 import java.util.HashMap;
 import java.util.Map;

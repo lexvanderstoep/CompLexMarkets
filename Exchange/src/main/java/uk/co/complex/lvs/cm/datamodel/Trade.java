@@ -1,4 +1,4 @@
-package uk.co.complex.lvs.cm;
+package uk.co.complex.lvs.cm.datamodel;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;

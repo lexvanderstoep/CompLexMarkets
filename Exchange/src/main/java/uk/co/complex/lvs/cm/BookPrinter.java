@@ -1,5 +1,10 @@
 package uk.co.complex.lvs.cm;
 
+import uk.co.complex.lvs.cm.datamodel.Book;
+import uk.co.complex.lvs.cm.datamodel.Order;
+import uk.co.complex.lvs.cm.datamodel.Product;
+import uk.co.complex.lvs.cm.datamodel.Trade;
+
 /**
  * Created by Lex van der Stoep on 06/12/2017.
  *

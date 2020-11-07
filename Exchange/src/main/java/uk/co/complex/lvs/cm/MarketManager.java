@@ -1,5 +1,12 @@
 package uk.co.complex.lvs.cm;
 
+import uk.co.complex.lvs.cm.datamodel.Account;
+import uk.co.complex.lvs.cm.datamodel.Book;
+import uk.co.complex.lvs.cm.datamodel.Order;
+import uk.co.complex.lvs.cm.datamodel.Product;
+import uk.co.complex.lvs.cm.datamodel.Side;
+import uk.co.complex.lvs.cm.datamodel.Status;
+import uk.co.complex.lvs.cm.datamodel.Trade;
 import uk.co.complex.lvs.cm.traders.RandomIntervalProductTrader;
 
 import java.util.*;
