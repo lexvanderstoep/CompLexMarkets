@@ -1,12 +1,12 @@
 package uk.co.complex.lvs.cm.gui;
 
+import info.clearthought.layout.TableLayout;
 import uk.co.complex.lvs.cm.datamodel.Account;
 import uk.co.complex.lvs.cm.MarketManager;
 import uk.co.complex.lvs.cm.PriceTimePriorityQueue;
 import uk.co.complex.lvs.cm.datamodel.Product;
 import uk.co.complex.lvs.cm.TradeListener;
 import uk.co.complex.lvs.cm.traders.RandomIntervalProductTrader;
-import layout.TableLayout;
 
 import javax.swing.*;
 import java.awt.*;

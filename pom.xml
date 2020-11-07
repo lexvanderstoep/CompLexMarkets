@@ -5,11 +5,32 @@
     <artifactId>complex-markets</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <TableLayout.version>20050920</TableLayout.version>
+        <junit.version>4.12</junit.version>
+    </properties>
+
     <packaging>pom</packaging>
 
     <modules>
         <module>exchange</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>tablelayout</groupId>
+                <artifactId>TableLayout</artifactId>
+                <version>${TableLayout.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
