@@ -72,7 +72,7 @@ public class RandomIntervalProductTrader {
         float price = rnd.nextFloat() * (mMaxValue - mMinValue) + mMinValue;
         Side side = (rnd.nextBoolean())?Side.BUY:Side.SELL;
         // Perform no sell trade if there is not enough of the product in the account
-        if (side == Side.SELL & tradeAmount > mAccount.getProductAmount(mProduct)) {
+        if (side == Side.SELL & tradeAmount > mAccount.getPosition(mProduct)) {
             return;
         }
         Order order = new Order(mProduct, price, tradeAmount, mAccount, side, OffsetDateTime.now());

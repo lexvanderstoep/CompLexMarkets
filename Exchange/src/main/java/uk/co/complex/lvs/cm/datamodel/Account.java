@@ -10,15 +10,15 @@ import java.util.Map;
  * it owns.
  */
 public class Account {
-    private final String mName;
-    private final Map<Product, Integer> book = new HashMap<>();
+    private final String theName;
+    private final Map<Product, Integer> thePosition = new HashMap<>();
 
     /**
      * Constructs an account with the specified name.
-     * @param name the name of the account
+     * @param aName the name of the account
      */
-    public Account(String name) {
-        mName = name;
+    public Account(String aName) {
+        theName = aName;
     }
 
     /**
@@ -26,26 +26,26 @@ public class Account {
      * @return the name of the account
      */
     public String getName() {
-        return mName;
+        return theName;
     }
 
     /**
      * Returns the amount of the specified product there is in the account.
-     * @param product the product
+     * @param aProduct the product
      * @return the amount of the product in the account
      */
-    public int getProductAmount(Product product) {
-        if (!book.containsKey(product)) return 0;
+    public int getPosition(Product aProduct) {
+        if (!thePosition.containsKey(aProduct)) return 0;
 
-        return book.get(product);
+        return thePosition.get(aProduct);
     }
 
-    public void updateBook(Product product, int change) {
-        if (book.containsKey(product)) {
-            int current = book.get(product);
-            book.put(product, current + change);
+    public void updateBook(Product aProduct, int aChange) {
+        if (thePosition.containsKey(aProduct)) {
+            int current = thePosition.get(aProduct);
+            thePosition.put(aProduct, current + aChange);
         } else {
-            book.put(product, change);
+            thePosition.put(aProduct, aChange);
         }
     }
 }

@@ -153,9 +153,9 @@ public class MarketManager {
                 "product to be traded is not listed on this market (was " +
                 order.getProduct().toString() + ")");
         if (order.getSide() == Side.SELL &
-                order.getActor().getProductAmount(order.getProduct()) < order.getAmount())
+            order.getActor().getPosition(order.getProduct()) < order.getAmount())
             throw new IllegalTradeException("The actor does not have enough of the product it is " +
-                    "trying to sell (has: " + order.getActor().getProductAmount(order.getProduct())
+                    "trying to sell (has: " + order.getActor().getPosition(order.getProduct())
                     + " , wants: " + order.getAmount() + ")");
 
         PriceTimePriorityQueue oppositeSide = ((order.getSide() == Side.BUY)?

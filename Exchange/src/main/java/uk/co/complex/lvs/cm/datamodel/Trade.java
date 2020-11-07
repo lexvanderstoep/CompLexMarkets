@@ -11,30 +11,29 @@ import java.util.Objects;
  * matching orders. An order is matching when they can agree on a price.
  */
 public class Trade {
-    private final Product mProduct;
-    private final Account mBuyer;
-    private final Account mSeller;
-    private final float mPrice;
-    private final int mAmount;
-    private final OffsetDateTime mTime;
+    private final Product theProduct;
+    private final Account theBuyer;
+    private final Account theSeller;
+    private final float thePrice;
+    private final int theAmount;
+    private final OffsetDateTime theTime;
 
     /**
      * Constructs a new trade record.
-     * @param product the traded product
-     * @param buyer the buyer of the product
-     * @param seller the seller of the product
-     * @param price the price at which the product was traded
-     * @param amount the amount which was traded
-     * @param time the time at which the trade was executed
+     * @param aProduct the traded product
+     * @param aBuyer the buyer of the product
+     * @param aSeller the seller of the product
+     * @param aPrice the price at which the product was traded
+     * @param aAmount the amount which was traded
+     * @param aTime the time at which the trade was executed
      */
-    public Trade(Product product, Account buyer, Account seller, float price, int amount,
-                       OffsetDateTime time) {
-        mProduct = product;
-        mBuyer = buyer;
-        mSeller = seller;
-        mPrice = price;
-        mAmount = amount;
-        mTime = time;
+    public Trade(Product aProduct, Account aBuyer, Account aSeller, float aPrice, int aAmount, OffsetDateTime aTime) {
+        theProduct = aProduct;
+        theBuyer = aBuyer;
+        theSeller = aSeller;
+        thePrice = aPrice;
+        theAmount = aAmount;
+        theTime = aTime;
     }
 
     /**
@@ -42,7 +41,7 @@ public class Trade {
      * @return the traded product
      */
     public Product getProduct() {
-        return mProduct;
+        return theProduct;
     }
 
     /**
@@ -50,7 +49,7 @@ public class Trade {
      * @return the buyer of the product
      */
     public Account getBuyer() {
-        return mBuyer;
+        return theBuyer;
     }
 
     /**
@@ -58,7 +57,7 @@ public class Trade {
      * @return the seller of the product
      */
     public Account getSeller() {
-        return mSeller;
+        return theSeller;
     }
 
     /**
@@ -66,7 +65,7 @@ public class Trade {
      * @return the price of the product
      */
     public float getPrice() {
-        return mPrice;
+        return thePrice;
     }
 
     /**
@@ -74,7 +73,7 @@ public class Trade {
      * @return the amount which was traded
      */
     public int getAmount() {
-        return mAmount;
+        return theAmount;
     }
 
     /**
@@ -82,17 +81,17 @@ public class Trade {
      * @return the time at which the trade was executed
      */
     public OffsetDateTime getTime() {
-        return mTime;
+        return theTime;
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(mProduct.getName() + ": ");
-        builder.append(mAmount + "x");
-        builder.append(String.format("%.2f", mPrice) + " ");
-        builder.append(mSeller.getName() + "->" + mBuyer.getName() + " ");
-        builder.append("@ " + mTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
+        builder.append(theProduct.getName() + ": ");
+        builder.append(theAmount + "x");
+        builder.append(String.format("%.2f", thePrice) + " ");
+        builder.append(theSeller.getName() + "->" + theBuyer.getName() + " ");
+        builder.append("@ " + theTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         return builder.toString();
     }
 
@@ -105,16 +104,16 @@ public class Trade {
             return false;
         }
         final Trade myOtherTrade = (Trade) myOtherObject;
-        return Float.compare(myOtherTrade.mPrice, mPrice) == 0 &&
-               mAmount == myOtherTrade.mAmount &&
-               Objects.equals(mProduct, myOtherTrade.mProduct) &&
-               Objects.equals(mBuyer, myOtherTrade.mBuyer) &&
-               Objects.equals(mSeller, myOtherTrade.mSeller) &&
-               Objects.equals(mTime, myOtherTrade.mTime);
+        return Float.compare(myOtherTrade.thePrice, thePrice) == 0 &&
+               theAmount == myOtherTrade.theAmount &&
+               Objects.equals(theProduct, myOtherTrade.theProduct) &&
+               Objects.equals(theBuyer, myOtherTrade.theBuyer) &&
+               Objects.equals(theSeller, myOtherTrade.theSeller) &&
+               Objects.equals(theTime, myOtherTrade.theTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mProduct, mBuyer, mSeller, mPrice, mAmount, mTime);
+        return Objects.hash(theProduct, theBuyer, theSeller, thePrice, theAmount, theTime);
     }
 }

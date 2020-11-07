@@ -9,14 +9,14 @@ import java.util.Objects;
  */
 
 public class Product {
-    private final String mName;
+    private final String theName;
 
     /**
      * Constructs a product with the specified name.
-     * @param name the name of the product
+     * @param aName the name of the product
      */
-    public Product(String name) {
-        mName = name;
+    public Product(String aName) {
+        theName = aName;
     }
 
     /**
@@ -24,7 +24,7 @@ public class Product {
      * @return the name of the product
      */
     public String getName() {
-        return mName;
+        return theName;
     }
 
     @Override
@@ -36,11 +36,11 @@ public class Product {
             return false;
         }
         final Product myOtherProduct = (Product) myOtherObject;
-        return mName.equals(myOtherProduct.mName);
+        return theName.equals(myOtherProduct.theName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mName);
+        return Objects.hash(theName);
     }
 }

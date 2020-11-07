@@ -11,21 +11,21 @@ import java.util.List;
  * The book holds records of each trade, sorted by their execution time, newest first.
  */
 public class Book {
-    private final LinkedList<Trade> mRecords;
+    private final LinkedList<Trade> theRecords;
 
     /**
      * Constructs an empty book.
      */
     public Book() {
-        mRecords = new LinkedList<>();
+        theRecords = new LinkedList<>();
     }
 
     /**
      * Constructs a copy of a given book.
-     * @param original the original record book
+     * @param aBook the original record book
      */
-    public Book(Book original) {
-        mRecords = new LinkedList<>(original.mRecords);
+    public Book(Book aBook) {
+        theRecords = new LinkedList<>(aBook.theRecords);
     }
 
     /**
@@ -33,24 +33,24 @@ public class Book {
      * @return a list of all the records in the book
      */
     public List<Trade> getAllRecords() {
-        return new ArrayList<>(mRecords);
+        return new ArrayList<>(theRecords);
     }
 
     /**
      * Adds the given record to the book.
-     * @param record the record to be added
+     * @param aRecord the record to be added
      */
-    public void addRecord(Trade record) {
+    public void addRecord(Trade aRecord) {
         // Assert: record list sorted from new to old
         // Use linear search (as new record will most likely be inserted at the head)
-        for (int i = 0; i < mRecords.size(); i++) {
-            Trade r = mRecords.get(i);
-            if (r.getTime().compareTo(record.getTime()) < 0) {
-                mRecords.add(i, record);
+        for (int i = 0; i < theRecords.size(); i++) {
+            Trade r = theRecords.get(i);
+            if (r.getTime().compareTo(aRecord.getTime()) < 0) {
+                theRecords.add(i, aRecord);
                 return;
             }
         }
-        mRecords.add(record);
+        theRecords.add(aRecord);
     }
 
     /**
@@ -67,6 +67,6 @@ public class Book {
 
         Book book = (Book) o;
 
-        return mRecords.equals(book.mRecords);
+        return theRecords.equals(book.theRecords);
     }
 }

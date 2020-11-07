@@ -10,33 +10,33 @@ import java.time.format.DateTimeFormatter;
  * (which buys or sells) and an amount of a certain product to buy/sell at a certain price.
  */
 public class Order {
-    private final Product mProduct;
-    private final float mPrice;
-    private final int mAmount;
-    private int mRemainingAmount;
-    private final Account mActor;
-    private final Side mSide;
-    private Status mStatus;
-    private final OffsetDateTime mTime;
+    private final Product theProduct;
+    private final float thePrice;
+    private final int theVolume;
+    private int theRemainingAmount;
+    private final Account theActor;
+    private final Side theSide;
+    private Status theStatus;
+    private final OffsetDateTime theTime;
 
     /**
      * Constructs a new order to buy/sell a certain amount of a product at a specified price.
-     * @param product the product to be bought/sold
-     * @param price the price of the order
-     * @param amount the amount to be traded
-     * @param actor the actor which wants to execute the order
-     * @param side the side of the order (buy/sell)
+     * @param aProduct the product to be bought/sold
+     * @param aPrice the price of the order
+     * @param aAmount the amount to be traded
+     * @param aActor the actor which wants to execute the order
+     * @param aSide the side of the order (buy/sell)
+     * @param aTime the time at which the order was placed
      */
-    public Order(Product product, float price, int amount, Account actor, Side side,
-                 OffsetDateTime time) {
-        mProduct = product;
-        mPrice = price;
-        mAmount = amount;
-        mRemainingAmount = amount;
-        mActor = actor;
-        mSide = side;
-        mStatus = Status.NEW;
-        mTime = time;
+    public Order(Product aProduct, float aPrice, int aAmount, Account aActor, Side aSide, OffsetDateTime aTime) {
+        this.theProduct = aProduct;
+        thePrice = aPrice;
+        theVolume = aAmount;
+        theRemainingAmount = aAmount;
+        theActor = aActor;
+        theSide = aSide;
+        theStatus = Status.NEW;
+        theTime = aTime;
     }
 
     /**
@@ -44,7 +44,7 @@ public class Order {
      * @return the product
      */
     public Product getProduct() {
-        return mProduct;
+        return theProduct;
     }
 
     /**
@@ -52,7 +52,7 @@ public class Order {
      * @return the price
      */
     public float getPrice() {
-        return mPrice;
+        return thePrice;
     }
 
     /**
@@ -60,7 +60,7 @@ public class Order {
      * @return the total amount
      */
     public int getAmount() {
-        return mAmount;
+        return theVolume;
     }
 
     /**
@@ -68,7 +68,7 @@ public class Order {
      * @return the remaining amount
      */
     public int getRemainingAmount() {
-        return mRemainingAmount;
+        return theRemainingAmount;
     }
 
     /**
@@ -76,7 +76,7 @@ public class Order {
      * @return the actor of the order
      */
     public Account getActor() {
-        return mActor;
+        return theActor;
     }
 
     /**
@@ -84,7 +84,7 @@ public class Order {
      * @return the side of the actor on this order
      */
     public Side getSide() {
-        return mSide;
+        return theSide;
     }
 
     /**
@@ -92,7 +92,7 @@ public class Order {
      * @return the status of the order
      */
     public Status getStatus() {
-        return mStatus;
+        return theStatus;
     }
 
     /**
@@ -100,7 +100,7 @@ public class Order {
      * @return the time at which this order was placed
      */
     public OffsetDateTime getTime() {
-        return mTime;
+        return theTime;
     }
 
     /**
@@ -120,26 +120,26 @@ public class Order {
 
         assert (0 <= amount & amount <= getRemainingAmount());
 
-        mRemainingAmount -= amount;
-        mStatus = (mRemainingAmount == 0) ? Status.COMPLETED : Status.PARTIAL;
+        theRemainingAmount -= amount;
+        theStatus = (theRemainingAmount == 0) ? Status.COMPLETED : Status.PARTIAL;
     }
 
     /**
      * Cancel this order.
      */
     public void cancelOrder() {
-        mStatus = Status.CANCELLED;
+        theStatus = Status.CANCELLED;
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append((mSide ==Side.BUY)?"Buy ":"Sell ");
-        builder.append(mProduct.getName() + " from ");
-        builder.append(mActor.getName() + ": ");
-        builder.append("(" + mRemainingAmount + "/" + mAmount + ")" + "x");
-        builder.append(String.format("%.2f", mPrice) + " ");
-        builder.append("@ " + mTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
+        builder.append((theSide == Side.BUY)?"Buy ":"Sell ");
+        builder.append(theProduct.getName() + " from ");
+        builder.append(theActor.getName() + ": ");
+        builder.append("(" + theRemainingAmount + "/" + theVolume + ")" + "x");
+        builder.append(String.format("%.2f", thePrice) + " ");
+        builder.append("@ " + theTime.format(DateTimeFormatter.ISO_LOCAL_TIME));
         return builder.toString();
     }
 }
