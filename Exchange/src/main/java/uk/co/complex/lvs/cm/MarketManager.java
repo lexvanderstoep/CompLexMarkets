@@ -9,7 +9,12 @@ import uk.co.complex.lvs.cm.datamodel.Status;
 import uk.co.complex.lvs.cm.datamodel.Trade;
 import uk.co.complex.lvs.cm.traders.RandomIntervalProductTrader;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Lex van der Stoep on 06/12/2017.

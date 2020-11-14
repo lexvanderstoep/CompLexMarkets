@@ -8,10 +8,22 @@ import uk.co.complex.lvs.cm.datamodel.Product;
 import uk.co.complex.lvs.cm.TradeListener;
 import uk.co.complex.lvs.cm.traders.RandomIntervalProductTrader;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.*;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Vector;
 import java.util.stream.Collectors;
 
 /**
@@ -33,7 +45,7 @@ public class MarketVisualisation implements TradeListener {
 
     public MarketVisualisation() {
         Thread pricePlotter = new Thread(() -> {
-            while(true) {
+            while (true) {
                 updatePricePlot();
                 try {
                     Thread.sleep(PLOT_INTERVAL);
@@ -131,7 +143,7 @@ public class MarketVisualisation implements TradeListener {
     }
 
     private Vector<String> toString(Collection collection) {
-        return new Vector<>((List<String>)collection.stream()
+        return new Vector<>((List<String>) collection.stream()
                 .map(object -> Objects.toString(object, null))
                 .collect(Collectors.toList()));
     }
@@ -151,10 +163,10 @@ public class MarketVisualisation implements TradeListener {
 
 
         RandomIntervalProductTrader randomAlice = new RandomIntervalProductTrader(
-                alice, ibm, manager,50.0f, 100.0f,
+                alice, ibm, manager, 50.0f, 100.0f,
                 1, 10, 1000, 2000);
         RandomIntervalProductTrader randomBob = new RandomIntervalProductTrader(
-                bob, ibm, manager,50.0f, 100.0f,
+                bob, ibm, manager, 50.0f, 100.0f,
                 10, 100, 1000, 2000);
         randomAlice.start();
         randomBob.start();

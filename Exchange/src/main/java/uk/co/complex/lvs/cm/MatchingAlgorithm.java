@@ -44,7 +44,7 @@ public class MatchingAlgorithm {
 
         List<Trade> matchedOrders = new ArrayList<>();
 
-        while(!opposingOrderQueue.isEmpty()) {
+        while (!opposingOrderQueue.isEmpty()) {
             Order oppositeOrder = opposingOrderQueue.first();
             if (order.getSide().equals(Side.BUY)) {
                 if (oppositeOrder.getPrice() > order.getPrice()) break;

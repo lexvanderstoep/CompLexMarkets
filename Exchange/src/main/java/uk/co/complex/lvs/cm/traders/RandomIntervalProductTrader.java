@@ -54,7 +54,7 @@ public class RandomIntervalProductTrader {
         mMaxAmount = maxAmount;
 
         tradingThread = new Thread(() -> {
-            while(true) {
+            while (true) {
                 if (stop) return;
                 int waitTime = rnd.nextInt(maxWait-minWait) + minWait;
                 try {
