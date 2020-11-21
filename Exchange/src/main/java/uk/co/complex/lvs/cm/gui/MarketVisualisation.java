@@ -1,19 +1,5 @@
 package uk.co.complex.lvs.cm.gui;
 
-import info.clearthought.layout.TableLayout;
-import uk.co.complex.lvs.cm.datamodel.Account;
-import uk.co.complex.lvs.cm.MarketManager;
-import uk.co.complex.lvs.cm.PriceTimePriorityQueue;
-import uk.co.complex.lvs.cm.datamodel.Product;
-import uk.co.complex.lvs.cm.TradeListener;
-import uk.co.complex.lvs.cm.traders.RandomIntervalProductTrader;
-
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -25,6 +11,21 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Vector;
 import java.util.stream.Collectors;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+
+import info.clearthought.layout.TableLayout;
+import uk.co.complex.lvs.cm.MarketManager;
+import uk.co.complex.lvs.cm.PriceTimePriorityQueue;
+import uk.co.complex.lvs.cm.TradeListener;
+import uk.co.complex.lvs.cm.datamodel.Account;
+import uk.co.complex.lvs.cm.datamodel.Product;
+import uk.co.complex.lvs.cm.traders.RandomIntervalProductTrader;
 
 /**
  * Created by Lex van der Stoep on 07/12/2017.

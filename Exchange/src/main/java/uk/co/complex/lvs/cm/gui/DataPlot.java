@@ -1,6 +1,5 @@
 package uk.co.complex.lvs.cm.gui;
 
-import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -11,6 +10,8 @@ import java.awt.font.LineMetrics;
 import java.awt.geom.Line2D;
 import java.text.DecimalFormat;
 import java.util.List;
+
+import javax.swing.JPanel;
 
 /**
  * Created by Lex van der Stoep on 08/12/2017.

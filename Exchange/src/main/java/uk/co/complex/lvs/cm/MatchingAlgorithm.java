@@ -1,14 +1,14 @@
 package uk.co.complex.lvs.cm;
 
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import uk.co.complex.lvs.cm.datamodel.Account;
 import uk.co.complex.lvs.cm.datamodel.Order;
 import uk.co.complex.lvs.cm.datamodel.Side;
 import uk.co.complex.lvs.cm.datamodel.Status;
 import uk.co.complex.lvs.cm.datamodel.Trade;
-
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Lex van der Stoep on 09/12/2017.

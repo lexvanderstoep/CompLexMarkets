@@ -1,5 +1,12 @@
 package uk.co.complex.lvs.cm;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import uk.co.complex.lvs.cm.datamodel.Account;
 import uk.co.complex.lvs.cm.datamodel.Book;
 import uk.co.complex.lvs.cm.datamodel.Order;
@@ -8,13 +15,6 @@ import uk.co.complex.lvs.cm.datamodel.Side;
 import uk.co.complex.lvs.cm.datamodel.Status;
 import uk.co.complex.lvs.cm.datamodel.Trade;
 import uk.co.complex.lvs.cm.traders.RandomIntervalProductTrader;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Lex van der Stoep on 06/12/2017.

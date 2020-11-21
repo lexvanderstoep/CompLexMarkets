@@ -1,14 +1,14 @@
 package uk.co.complex.lvs.cm.traders;
 
-import uk.co.complex.lvs.cm.datamodel.Account;
+import java.time.OffsetDateTime;
+import java.util.Random;
+
 import uk.co.complex.lvs.cm.IllegalTradeException;
 import uk.co.complex.lvs.cm.MarketManager;
+import uk.co.complex.lvs.cm.datamodel.Account;
 import uk.co.complex.lvs.cm.datamodel.Order;
 import uk.co.complex.lvs.cm.datamodel.Product;
 import uk.co.complex.lvs.cm.datamodel.Side;
-
-import java.time.OffsetDateTime;
-import java.util.Random;
 
 /**
  * Created by Lex van der Stoep on 07/12/2017.
