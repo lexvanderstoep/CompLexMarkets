@@ -14,19 +14,19 @@ import uk.co.complex.lvs.cm.datamodel.Trade;
 public class BookPrinter implements TradeListener {
     @Override
     public void update(MarketManager manager) {
-        Book currentBook = manager.getBook();
+        final Book currentBook = manager.getBook();
 
         System.out.println("==============");
         System.out.println("Buy queue:");
         for (Product p: manager.getProducts()) {
-            PriceTimePriorityQueue buyQueue = manager.getBuyQueue(p);
+            final PriceTimePriorityQueue buyQueue = manager.getBuyQueue(p);
             for (Order buyOrder : buyQueue) {
                 System.out.println(buyOrder);
             }
         }
         System.out.println("Sell queue:");
         for (Product p: manager.getProducts()) {
-            PriceTimePriorityQueue sellQueue = manager.getSellQueue(p);
+            final PriceTimePriorityQueue sellQueue = manager.getSellQueue(p);
             for (Order sellOrder : sellQueue) {
                 System.out.println(sellOrder);
             }

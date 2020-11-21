@@ -56,7 +56,7 @@ public class RandomIntervalProductTrader {
         tradingThread = new Thread(() -> {
             while (true) {
                 if (stop) return;
-                int waitTime = rnd.nextInt(maxWait-minWait) + minWait;
+                final int waitTime = rnd.nextInt(maxWait-minWait) + minWait;
                 try {
                     Thread.sleep(waitTime);
                 } catch (InterruptedException e) {
@@ -68,14 +68,14 @@ public class RandomIntervalProductTrader {
     }
 
     private void performTrade() {
-        int tradeAmount = rnd.nextInt(mMaxAmount - mMinAmount) + mMinAmount;
-        float price = rnd.nextFloat() * (mMaxValue - mMinValue) + mMinValue;
-        Side side = (rnd.nextBoolean())?Side.BUY:Side.SELL;
+        final int tradeAmount = rnd.nextInt(mMaxAmount - mMinAmount) + mMinAmount;
+        final float price = rnd.nextFloat() * (mMaxValue - mMinValue) + mMinValue;
+        final Side side = (rnd.nextBoolean())?Side.BUY:Side.SELL;
         // Perform no sell trade if there is not enough of the product in the account
         if (side == Side.SELL & tradeAmount > mAccount.getPosition(mProduct)) {
             return;
         }
-        Order order = new Order(mProduct, price, tradeAmount, mAccount, side, OffsetDateTime.now());
+        final Order order = new Order(mProduct, price, tradeAmount, mAccount, side, OffsetDateTime.now());
         try {
             mManager.placeOrder(order);
         } catch (IllegalTradeException e) {

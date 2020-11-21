@@ -44,7 +44,7 @@ public class Book {
         // Assert: record list sorted from new to old
         // Use linear search (as new record will most likely be inserted at the head)
         for (int i = 0; i < theRecords.size(); i++) {
-            Trade r = theRecords.get(i);
+            final Trade r = theRecords.get(i);
             if (r.getTime().compareTo(aRecord.getTime()) < 0) {
                 theRecords.add(i, aRecord);
                 return;
@@ -65,7 +65,7 @@ public class Book {
     public boolean equals(Object o) {
         if (!(o instanceof Book)) return false;
 
-        Book book = (Book) o;
+        final Book book = (Book) o;
 
         return theRecords.equals(book.theRecords);
     }

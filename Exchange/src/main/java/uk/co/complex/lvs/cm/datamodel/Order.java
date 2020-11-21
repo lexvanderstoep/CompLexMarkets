@@ -133,7 +133,7 @@ public class Order {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append((theSide == Side.BUY)?"Buy ":"Sell ");
         builder.append(theProduct.getName() + " from ");
         builder.append(theActor.getName() + ": ");

@@ -45,7 +45,7 @@ public class MarketVisualisation implements TradeListener {
     private ArrayList<Float> priceHistory = new ArrayList<>();
 
     public MarketVisualisation() {
-        Thread pricePlotter = new Thread(() -> {
+        final Thread pricePlotter = new Thread(() -> {
             while (true) {
                 updatePricePlot();
                 try {
@@ -65,17 +65,17 @@ public class MarketVisualisation implements TradeListener {
      */
     private void createAndShowGUI() {
         //Create and set up the window
-        JFrame frame = new JFrame();
+        final JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("Market Visualisation");
         frame.setSize(new Dimension(1500, 550));
         frame.setMinimumSize(new Dimension(700, 450));
 
         // Set up the table layout
-        JPanel panel = new JPanel();
+        final JPanel panel = new JPanel();
         panel.setBackground(Color.darkGray);
         frame.setContentPane(panel);
-        double size[][] =
+        final double size[][] =
                 {{350, TableLayout.FILL}, {50, 0.5, 0.5}};
         panel.setLayout(new TableLayout(size));
 
@@ -88,11 +88,11 @@ public class MarketVisualisation implements TradeListener {
         bookList = new JList();
         priceLabel = new JLabel();
         priceLabel.setFont(new Font("TimesRoman", Font.BOLD, 16));
-        JScrollPane sellPane = new JScrollPane(sellQList);
+        final JScrollPane sellPane = new JScrollPane(sellQList);
         sellPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        JScrollPane buyPane = new JScrollPane(buyQList);
+        final JScrollPane buyPane = new JScrollPane(buyQList);
         buyPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        JScrollPane bookPane = new JScrollPane(bookList);
+        final JScrollPane bookPane = new JScrollPane(bookList);
         bookPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         priceLabel.setHorizontalAlignment(JLabel.CENTER);
         priceLabel.setForeground(Color.white);
@@ -109,13 +109,13 @@ public class MarketVisualisation implements TradeListener {
 
     @Override
     public void update(MarketManager manager) {
-        PriceTimePriorityQueue buyQueue = manager.getBuyQueue(manager.getProducts().get(0));
-        PriceTimePriorityQueue sellQueue = manager.getSellQueue(manager.getProducts().get(0));
+        final PriceTimePriorityQueue buyQueue = manager.getBuyQueue(manager.getProducts().get(0));
+        final PriceTimePriorityQueue sellQueue = manager.getSellQueue(manager.getProducts().get(0));
         buyQList.setListData(toString(buyQueue));
         sellQList.setListData(toString(sellQueue));
         bookList.setListData(toString(manager.getBook().getAllRecords()));
 
-        Optional<Float> price = getPrice(sellQueue, buyQueue);
+        final Optional<Float> price = getPrice(sellQueue, buyQueue);
         lastPrice = price;
 
         if (!price.isPresent()) {
@@ -150,23 +150,23 @@ public class MarketVisualisation implements TradeListener {
     }
 
     public static void main(String[] args) {
-        Product ibm = new Product("IBM");
-        Account alice = new Account("Alice");
-        Account bob = new Account("Bob");
+        final Product ibm = new Product("IBM");
+        final Account alice = new Account("Alice");
+        final Account bob = new Account("Bob");
         bob.updateBook(ibm, 100);
-        MarketManager manager = new MarketManager(
+        final MarketManager manager = new MarketManager(
                 new ArrayList<>(Arrays.asList(ibm)));
 
 
-        MarketVisualisation visualiser = new MarketVisualisation();
+        final MarketVisualisation visualiser = new MarketVisualisation();
         visualiser.createAndShowGUI();
         manager.addTradeListener(visualiser);
 
 
-        RandomIntervalProductTrader randomAlice = new RandomIntervalProductTrader(
+        final RandomIntervalProductTrader randomAlice = new RandomIntervalProductTrader(
                 alice, ibm, manager, 50.0f, 100.0f,
                 1, 10, 1000, 2000);
-        RandomIntervalProductTrader randomBob = new RandomIntervalProductTrader(
+        final RandomIntervalProductTrader randomBob = new RandomIntervalProductTrader(
                 bob, ibm, manager, 50.0f, 100.0f,
                 10, 100, 1000, 2000);
         randomAlice.start();

@@ -42,29 +42,29 @@ public class MatchingAlgorithm {
                     "contain order of the same side");
         }
 
-        List<Trade> matchedOrders = new ArrayList<>();
+        final List<Trade> matchedOrders = new ArrayList<>();
 
         while (!opposingOrderQueue.isEmpty()) {
-            Order oppositeOrder = opposingOrderQueue.first();
+            final Order oppositeOrder = opposingOrderQueue.first();
             if (order.getSide().equals(Side.BUY)) {
                 if (oppositeOrder.getPrice() > order.getPrice()) break;
             } else {
                 if (oppositeOrder.getPrice() < order.getPrice()) break;
             }
 
-                int tradeAmount = Math.min(order.getRemainingAmount(),
+                final int tradeAmount = Math.min(order.getRemainingAmount(),
                                            oppositeOrder.getRemainingAmount());
 
                 oppositeOrder.tradeProduct(tradeAmount);
                 order.tradeProduct(tradeAmount);
 
-                float price = (order.getPrice() + oppositeOrder.getPrice())/2;
+                final float price = (order.getPrice() + oppositeOrder.getPrice())/2;
 
-                Account buyer = (order.getSide() == Side.BUY)?
+                final Account buyer = (order.getSide() == Side.BUY)?
                         order.getActor() : oppositeOrder.getActor();
-                Account seller = (order.getSide() == Side.SELL)?
+                final Account seller = (order.getSide() == Side.SELL)?
                         order.getActor() : oppositeOrder.getActor();
-                Trade record = new Trade(order.getProduct(), buyer, seller, price,
+                final Trade record = new Trade(order.getProduct(), buyer, seller, price,
                         tradeAmount, OffsetDateTime.now());
                 matchedOrders.add(record);
 

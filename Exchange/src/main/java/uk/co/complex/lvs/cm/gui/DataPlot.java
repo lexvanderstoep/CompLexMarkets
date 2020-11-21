@@ -51,11 +51,11 @@ public class DataPlot extends JPanel {
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
+        final Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
-        int w = getWidth();
-        int h = getHeight();
+        final int w = getWidth();
+        final int h = getHeight();
 
         // Draw vertical axis
         g2.draw(new Line2D.Double(mXPadding, mYPadding, mXPadding, h-mYPadding));
@@ -64,18 +64,18 @@ public class DataPlot extends JPanel {
         g2.draw(new Line2D.Double(mXPadding, h-mYPadding, w-mXPadding, h-mYPadding));
 
         // Draw labels
-        Font font = g2.getFont();
-        FontRenderContext frc = g2.getFontRenderContext();
-        LineMetrics lm = font.getLineMetrics("0", frc);
-        float sh = lm.getAscent() + lm.getDescent();
+        final Font font = g2.getFont();
+        final FontRenderContext frc = g2.getFontRenderContext();
+        final LineMetrics lm = font.getLineMetrics("0", frc);
+        final float sh = lm.getAscent() + lm.getDescent();
 
         // Vertical label
         String s = mYLabel;
         float sy = mYPadding + ((h - 2*mYPadding) - s.length()*sh)/2 + lm.getAscent();
         for (int i = 0; i < s.length(); i++) {
-            String letter = String.valueOf(s.charAt(i));
-            float sw = (float) font.getStringBounds(letter, frc).getWidth();
-            float sx = (mXPadding - sw)/2;
+            final String letter = String.valueOf(s.charAt(i));
+            final float sw = (float) font.getStringBounds(letter, frc).getWidth();
+            final float sx = (mXPadding - sw)/2;
             g2.drawString(letter, sx, sy);
             sy += sh;
         }
@@ -83,31 +83,31 @@ public class DataPlot extends JPanel {
         // Horizontal label
         s = mXLabel;
         sy = h - mYPadding + (mYPadding - sh)/2 + lm.getAscent();
-        float sw = (float) font.getStringBounds(s, frc).getWidth();
-        float sx = (w - sw)/2;
+        final float sw = (float) font.getStringBounds(s, frc).getWidth();
+        final float sx = (w - sw)/2;
         g2.drawString(s, sx, sy);
 
         // Draw values
-        float min = getMin() * 0.9f;
-        float max = getMax() * 1.1f;
+        final float min = getMin() * 0.9f;
+        final float max = getMax() * 1.1f;
         if (mData.size() > 1) {
-            String bottomString = new DecimalFormat("#.##").format(min);
-            String topString = new DecimalFormat("#.##").format(max);
-            float widthBottom = (float) font.getStringBounds(bottomString, frc).getWidth();
-            float widthTop = (float) font.getStringBounds(topString, frc).getWidth();
+            final String bottomString = new DecimalFormat("#.##").format(min);
+            final String topString = new DecimalFormat("#.##").format(max);
+            final float widthBottom = (float) font.getStringBounds(bottomString, frc).getWidth();
+            final float widthTop = (float) font.getStringBounds(topString, frc).getWidth();
             g2.drawString(bottomString, mXPadding - widthBottom - 5, h - mYPadding);
             g2.drawString(topString, mXPadding - widthTop - 5, mYPadding);
         }
 
         // Draw lines
-        double xInc = (double) (w - 2*mXPadding)/(mData.size()-1);
-        double scale = (double) (h - 2*mYPadding)/max;
+        final double xInc = (double) (w - 2*mXPadding)/(mData.size()-1);
+        final double scale = (double) (h - 2*mYPadding)/max;
         g2.setPaint(mLineColor);
         for (int i = 0; i < mData.size()-1; i++) {
-            double x1 = mXPadding + i*xInc;
-            double y1 = h - mYPadding - scale*mData.get(i);
-            double x2 = mXPadding + (i+1)*xInc;
-            double y2 = h - mYPadding - scale*mData.get(i+1);
+            final double x1 = mXPadding + i*xInc;
+            final double y1 = h - mYPadding - scale*mData.get(i);
+            final double x2 = mXPadding + (i+1)*xInc;
+            final double y2 = h - mYPadding - scale*mData.get(i+1);
             g2.draw(new Line2D.Double(x1, y1, x2, y2));
         }
     }

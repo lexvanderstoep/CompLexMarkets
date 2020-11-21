@@ -86,7 +86,7 @@ public class Trade {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append(theProduct.getName() + ": ");
         builder.append(theAmount + "x");
         builder.append(String.format("%.2f", thePrice) + " ");

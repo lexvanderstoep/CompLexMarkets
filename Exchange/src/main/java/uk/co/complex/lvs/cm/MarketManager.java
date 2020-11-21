@@ -122,8 +122,8 @@ public class MarketManager {
      */
     private void notifyAccounts(List<Trade> trades) {
         trades.forEach((Trade r) -> {
-            Product p = r.getProduct();
-            int amount = r.getAmount();
+            final Product p = r.getProduct();
+            final int amount = r.getAmount();
             r.getBuyer().updateBook(p, amount);
             r.getSeller().updateBook(p, -amount);
         });
@@ -135,9 +135,9 @@ public class MarketManager {
      * @return true iff the order was successfully cancelled and removed from the buy/sell queue
      */
     public synchronized boolean cancelOrder(Order order) {
-        Map<Product, PriceTimePriorityQueue> orderQueues = (order.getSide() == Side.BUY)?
+        final Map<Product, PriceTimePriorityQueue> orderQueues = (order.getSide() == Side.BUY)?
                 mBuyQueues : mSellQueues;
-        PriceTimePriorityQueue productQueue = orderQueues.get(order.getProduct());
+        final PriceTimePriorityQueue productQueue = orderQueues.get(order.getProduct());
         order.cancelOrder();
         return productQueue.remove(order);
     }
@@ -163,13 +163,13 @@ public class MarketManager {
                     "trying to sell (has: " + order.getActor().getPosition(order.getProduct())
                     + " , wants: " + order.getAmount() + ")");
 
-        PriceTimePriorityQueue oppositeSide = ((order.getSide() == Side.BUY)?
+        final PriceTimePriorityQueue oppositeSide = ((order.getSide() == Side.BUY)?
                 mSellQueues : mBuyQueues).get(order.getProduct());
 
-        List<Trade> trades = MatchingAlgorithm.matchOrder(order, oppositeSide);
+        final List<Trade> trades = MatchingAlgorithm.matchOrder(order, oppositeSide);
 
         if (order.getStatus() != Status.COMPLETED) {
-            PriceTimePriorityQueue actorSide = ((order.getSide() == Side.BUY)?
+            final PriceTimePriorityQueue actorSide = ((order.getSide() == Side.BUY)?
                     mBuyQueues : mSellQueues).get(order.getProduct());
             actorSide.add(order);
         }
@@ -185,13 +185,13 @@ public class MarketManager {
         final Product xyz = new Product("XYZ");
         final MarketManager manager = new MarketManager(
                 new ArrayList<>(Arrays.asList(xyz)));
-        BookPrinter marketPrinter = new BookPrinter();
+        final BookPrinter marketPrinter = new BookPrinter();
         manager.addTradeListener(marketPrinter);
 
-        RandomIntervalProductTrader buyer = new RandomIntervalProductTrader(
+        final RandomIntervalProductTrader buyer = new RandomIntervalProductTrader(
                 new Account("Buyer"), xyz, manager, 50.0f, 100.0f,
                 1, 10, 1000, 2000);
-        RandomIntervalProductTrader seller = new RandomIntervalProductTrader(
+        final RandomIntervalProductTrader seller = new RandomIntervalProductTrader(
                 new Account("Seller"), xyz, manager, 50.0f, 100.0f,
                 1, 10, 1000, 2000);
         buyer.start();

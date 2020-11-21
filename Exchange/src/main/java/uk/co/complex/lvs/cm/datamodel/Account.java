@@ -42,7 +42,7 @@ public class Account {
 
     public void updateBook(Product aProduct, int aChange) {
         if (thePosition.containsKey(aProduct)) {
-            int current = thePosition.get(aProduct);
+            final int current = thePosition.get(aProduct);
             thePosition.put(aProduct, current + aChange);
         } else {
             thePosition.put(aProduct, aChange);
