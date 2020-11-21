@@ -15,6 +15,9 @@
     </module>
 
     <module name="TreeWalker">
+        <!-- Coding -->
+        <module name="FinalLocalVariable"/>
+
         <!-- Imports -->
         <module name="AvoidStarImport"/>
         <module name="AvoidStaticImport"/>
@@ -29,6 +32,7 @@
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
 
+        <!-- Spacing -->
         <module name="WhitespaceAfter">
             <property name="tokens"
                       value="COMMA, SEMI, TYPECAST, LITERAL_IF, LITERAL_ELSE,
